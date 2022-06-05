@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1, width=device-width" />
+    <title>Bookmarks</title>
+    <link rel="stylesheet" href="css/pure-nr-min.css" />
+    <link rel="stylesheet" href="css/pure-grids-min.css" />
+    <link rel="stylesheet" href="css/app.css" />
+    <script defer src="js/vue.js"></script>
+    <script defer type="module" src="js/app.js"></script>
+  </head>
+
+  <body>
+    <div class="container" id="app">
+      <b-no-token v-if="!hasToken" @token-added="hasToken = true"></b-no-token>
+
+      <template v-else>
+        <b-dashboard></b-dashboard>
+      </template>
+    </div>
+
+    <!-- COMPONENT TEMPLATES -->
+
+    <!-- Dashboard -->
+    <template id="b-dashboard">
+      <div>
+        <details ref="addBookmarkForm">
+          <summary class="pure-button">Add Bookmark</summary>
+
+          <b-add-bookmark @bookmark-added="onBookmarkAdded"></b-add-bookmark>
+        </details>
+
+        <b-bookmarks :bookmarks="bookmarks" class="m-t-xl"></b-bookmarks>
+      </div>
+    </template>
+
+    <!-- Bookmarks list -->
+    <template id="b-bookmarks">
+      <div class="bookmarks-list">
+        <article
+          class="bookmark-item p-t-md p-b-md"
+          v-for="bm in sortedBookmarks"
+        >
+          <h2 class="title m-t-none m-b-xs">
+            <a :href="bm.url">{{ bm.title }}</a>
+          </h2>
+          <a :href="bm.url" class="url muted m-b-sm">{{ bm.url }}</a>
+
+          <!-- <div class="description m-b-sm">{{ bm.description }}</div> -->
+
+          <div class="pure-g">
+            <div class="pure-u p-r-md">
+              <time>{{ dateDisplay(bm.updated) }}</time>
+            </div>
+
+            <div class="pure-u">
+              <ul class="tags m-none">
+                <li class="m-r-sm m-t-none m-b-none" v-for="tag in bm.tags">
+                  <a href="#">{{ tag }}</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </article>
+      </div>
+    </template>
+
+    <!-- Add bookmark form -->
+    <template id="b-add-bookmark">
+      <form @submit.prevent="addBookmark" class="pure-form pure-form-stacked">
+        <input
+          class="pure-input-1"
+          type="text"
+          placeholder="Title"
+          v-model="title"
+        />
+        <input
+          class="pure-input-1"
+          type="url"
+          placeholder="URL"
+          v-model="url"
+        />
+        <textarea
+          class="pure-input-1"
+          rows="3"
+          v-model="description"
+        ></textarea>
+        <input
+          class="pure-input-1"
+          type="text"
+          placeholder="Tags"
+          v-model="tags"
+        />
+        <button class="pure-button pure-button-primary" type="submit">
+          Save Bookmark
+        </button>
+      </form>
+    </template>
+
+    <!-- Login form -->
+    <template id="b-no-token">
+      <form class="pure-form pure-form-stacked">
+        <label>Token</label>
+        <input class="pure-input-2-3" type="text" v-model="token" />
+        <button
+          @click="addToken"
+          class="pure-button pure-button-primary"
+          type="button"
+        >
+          Go
+        </button>
+      </form>
+    </template>
+  </body>
+</html>

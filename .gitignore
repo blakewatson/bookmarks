@@ -1,0 +1,9 @@
+Thumbs.db
+.DS_Store
+node_modules
+build
+dist
+vendor
+._*
+protected/data
+protected/errors.log

@@ -1,0 +1,111 @@
+@import url('spacing.css');
+
+:root {
+  --bg: white;
+  --font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir,
+    segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial,
+    sans-serif;
+  --border-color: gainsboro;
+  --link-color: blue;
+  --text-color: black;
+  --text-muted: gray;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #222;
+    --border-color: dimgray;
+    --link-color: powderblue;
+    --text-color: lightgray;
+  }
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg);
+  color: var(--text-color);
+}
+
+.container {
+  margin: 2em auto;
+  max-width: 960px;
+}
+
+.pure-g > * {
+  box-sizing: border-box;
+}
+
+/* General typography
+--------------------------------------- */
+
+/*
+When setting the primary font stack, apply it to the Pure grid units along
+with "html", "button", "input", "select", and "textarea". Pure Grids use
+specific font stacks to ensure the greatest OS/browser compatibility.
+*/
+html,
+button,
+input,
+select,
+textarea,
+.pure-g [class*='pure-u'] {
+  /* Set your content font stack here: */
+  font-family: var(--font-family);
+}
+
+a {
+  text-decoration: none;
+  color: var(--link-color);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+/* Bookmarks list
+--------------------------------------- */
+
+.bookmark-item + .bookmark-item {
+  border-top: 1px solid var(--border-color);
+}
+
+.title {
+  font-size: 1.2em;
+  font-weight: normal;
+}
+
+.tags {
+  padding-left: 0;
+  list-style: none;
+}
+
+.tags li {
+  display: inline-block;
+}
+
+.url {
+  display: block;
+}
+
+/* Forms 
+--------------------------------------- */
+
+.control {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+@media (prefers-color-scheme: dark) {
+  #app .pure-form input[type='text'],
+  #app .pure-form input[type='url'],
+  #app .pure-form textarea {
+    background-color: #333;
+    border-color: darkgray;
+    box-shadow: 0 1px 3px black;
+    color: var(--text-color);
+  }
+}
