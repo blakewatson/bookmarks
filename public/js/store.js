@@ -5,20 +5,36 @@ export const store = Vue.observable({
   tags: []
 });
 
-export const saveBookmark = (bookmark) => {
-  const existingBookmark =
-    store.bookmarks.findIndex((bm) => bm.url === bookmark.url) || bookmark;
+export const deleteBookmark = (bookmark) => {
+  if (!bookmark.url) {
+    console.error('deleteBookmark requires a bookmark.url');
+    return;
+  }
 
-  // if it already exists, update the relevant fields
-  if (existingBookmark !== -1) {
-    store.bookmarks[existingBookmark] = {
-      ...bookmark,
-      created: existingBookmark.created,
-      updated: Date.now()
-    };
+  store.bookmarks = store.bookmarks.filter((bm) => bm.url !== bookmark.url);
+  return write();
+};
 
-    write();
-    return true;
+export const saveBookmark = (bookmark, existingUrl = null) => {
+  if (existingUrl) {
+    const existingBookmark =
+      store.bookmarks.findIndex((bm) => bm.url === existingUrl) || bookmark;
+
+    // if it already exists, update the relevant fields
+    if (existingBookmark !== -1) {
+      const updatedBookmark = {
+        ...bookmark,
+        created: existingBookmark.created,
+        updated: Date.now()
+      };
+
+      Vue.set(store.bookmarks, existingBookmark, updatedBookmark);
+
+      return write();
+    }
+
+    console.error('Existing bookmark not found.');
+    return false;
   }
 
   // if it's a new bookmark, add the dates and push to the store
@@ -28,8 +44,7 @@ export const saveBookmark = (bookmark) => {
     updated: Date.now()
   });
 
-  write();
-  return true;
+  return write();
 };
 
 export const read = () => {

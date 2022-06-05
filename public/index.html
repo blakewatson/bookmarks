@@ -29,7 +29,10 @@
         <details ref="addBookmarkForm">
           <summary class="pure-button">Add Bookmark</summary>
 
-          <b-add-bookmark @bookmark-added="onBookmarkAdded"></b-add-bookmark>
+          <b-bookmark-form
+            @bookmark-added="closeBookmarkForm"
+            @cancel="closeBookmarkForm"
+          ></b-bookmark-form>
         </details>
 
         <b-bookmarks :bookmarks="bookmarks" class="m-t-xl"></b-bookmarks>
@@ -39,37 +42,73 @@
     <!-- Bookmarks list -->
     <template id="b-bookmarks">
       <div class="bookmarks-list">
-        <article
-          class="bookmark-item p-t-md p-b-md"
+        <b-bookmark
+          :bookmark="bm"
+          :key="bm.url"
+          class="p-t-md p-b-md"
           v-for="bm in sortedBookmarks"
-        >
-          <h2 class="title m-t-none m-b-xs">
-            <a :href="bm.url">{{ bm.title }}</a>
-          </h2>
-          <a :href="bm.url" class="url muted m-b-sm">{{ bm.url }}</a>
-
-          <!-- <div class="description m-b-sm">{{ bm.description }}</div> -->
-
-          <div class="pure-g">
-            <div class="pure-u p-r-md">
-              <time>{{ dateDisplay(bm.updated) }}</time>
-            </div>
-
-            <div class="pure-u">
-              <ul class="tags m-none">
-                <li class="m-r-sm m-t-none m-b-none" v-for="tag in bm.tags">
-                  <a href="#">{{ tag }}</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </article>
+        ></b-bookmark>
       </div>
     </template>
 
-    <!-- Add bookmark form -->
-    <template id="b-add-bookmark">
-      <form @submit.prevent="addBookmark" class="pure-form pure-form-stacked">
+    <!-- Single bookmark item -->
+    <template id="b-bookmark">
+      <div class="bookmark-item">
+        <template v-if="isEditing">
+          <b-bookmark-form
+            :bookmark="bookmark"
+            @bookmark-saved="isEditing = false"
+            @cancel="onCancel"
+          ></b-bookmark-form>
+        </template>
+
+        <template v-else>
+          <article>
+            <h2 class="title m-t-none m-b-xs">
+              <a :href="bookmark.url">{{ bookmark.title }}</a>
+            </h2>
+            <a :href="bookmark.url" class="url muted m-b-sm"
+              >{{ bookmark.url }}</a
+            >
+
+            <!-- <div class="description m-b-sm">{{ bookmark.description }}</div> -->
+
+            <ul class="tags m-none m-b-sm">
+              <li class="m-r-sm m-t-none m-b-none" v-for="tag in bookmark.tags">
+                <a href="#">{{ tag }}</a>
+              </li>
+            </ul>
+
+            <div class="pure-g bookmark-meta">
+              <div class="pure-u p-r-md">
+                <time>{{ updatedDate }}</time>
+              </div>
+
+              <div class="pure-u bookmark-actions">
+                <a @click.prevent="onClickOfEdit" class="m-r-sm" href="#"
+                  >edit</a
+                >
+
+                <a
+                  @click.prevent="onClickOfDelete"
+                  class="bookmark-delete"
+                  href="#"
+                  class="bookmark-delete"
+                >
+                  <span v-if="areYouSure">really?</span>
+                  <span v-else>delete</span>
+                </a>
+                <a @click.prevent="nah" href="#" v-if="areYouSure">nah</a>
+              </div>
+            </div>
+          </article>
+        </template>
+      </div>
+    </template>
+
+    <!-- Bookmark form -->
+    <template id="b-bookmark-form">
+      <form @submit.prevent="saveBookmark" class="pure-form pure-form-stacked">
         <input
           class="pure-input-1"
           type="text"
@@ -93,9 +132,15 @@
           placeholder="Tags"
           v-model="tags"
         />
-        <button class="pure-button pure-button-primary" type="submit">
-          Save Bookmark
-        </button>
+        <div class="m-t-md">
+          <button class="pure-button pure-button-primary" type="submit">
+            Save Bookmark
+          </button>
+
+          <button @click="emitCancel" class="pure-button m-l-sm" type="button">
+            Cancel
+          </button>
+        </div>
       </form>
     </template>
 

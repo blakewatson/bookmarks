@@ -7,6 +7,7 @@
     sans-serif;
   --border-color: gainsboro;
   --link-color: blue;
+  --red: crimson;
   --text-color: black;
   --text-muted: gray;
 }
@@ -16,6 +17,7 @@
     --bg: #222;
     --border-color: dimgray;
     --link-color: powderblue;
+    --red: lightcoral;
     --text-color: lightgray;
   }
 }
@@ -89,6 +91,18 @@ a:hover {
 
 .url {
   display: block;
+}
+
+.bookmark-meta {
+  font-size: 0.875rem;
+}
+
+.bookmark-actions a {
+  color: var(--text-muted);
+}
+
+.bookmark-actions .bookmark-delete:hover {
+  color: var(--red);
 }
 
 /* Forms 

@@ -1,4 +1,4 @@
-import { store, read, saveBookmark } from './store.js';
+import { deleteBookmark, read, saveBookmark, store } from './store.js';
 import { dateDisplay } from './utils.js';
 
 Vue.component('b-no-token', {
@@ -26,11 +26,8 @@ Vue.component('b-dashboard', {
   },
 
   methods: {
-    onBookmarkAdded() {
+    closeBookmarkForm() {
       this.$refs['addBookmarkForm'].removeAttribute('open');
-      console.log(
-        JSON.stringify({ bookmarks: store.bookmarks, tags: store.tags })
-      );
     }
   }
 });
@@ -40,7 +37,7 @@ Vue.component('b-bookmarks', {
 
   data: () => ({
     order: 'desc', // or asc
-    sortBy: 'updated' // or created
+    sortBy: 'created' // or created
   }),
 
   props: {
@@ -70,8 +67,58 @@ Vue.component('b-bookmarks', {
   }
 });
 
-Vue.component('b-add-bookmark', {
-  template: '#b-add-bookmark',
+Vue.component('b-bookmark', {
+  template: '#b-bookmark',
+
+  props: {
+    bookmark: Object
+  },
+
+  data: () => ({
+    areYouSure: false,
+    isEditing: false
+  }),
+
+  computed: {
+    createdDate() {
+      return dateDisplay(this.bookmark.updated);
+    },
+
+    updatedDate() {
+      return dateDisplay(this.bookmark.updated);
+    }
+  },
+
+  methods: {
+    nah() {
+      this.areYouSure = false;
+    },
+
+    onCancel() {
+      this.isEditing = false;
+    },
+
+    onClickOfDelete() {
+      if (!this.areYouSure) {
+        this.areYouSure = true;
+        return;
+      }
+
+      deleteBookmark(this.bookmark);
+    },
+
+    onClickOfEdit() {
+      this.isEditing = true;
+    }
+  }
+});
+
+Vue.component('b-bookmark-form', {
+  template: '#b-bookmark-form',
+
+  props: {
+    bookmark: Object
+  },
 
   data: () => ({
     title: '',
@@ -81,22 +128,35 @@ Vue.component('b-add-bookmark', {
   }),
 
   computed: {
+    isEditing() {
+      return Boolean(this.bookmark);
+    },
+
     tagsArray() {
       return this.tags.split(' ');
     }
   },
 
-  methods: {
-    addBookmark() {
-      saveBookmark({
-        title: this.title,
-        url: this.url,
-        description: this.description,
-        tags: this.tagsArray
-      });
+  watch: {
+    bookmark: {
+      handler(bm) {
+        if (!bm) {
+          return;
+        }
 
+        this.title = bm.title;
+        this.url = bm.url;
+        this.description = bm.description;
+        this.tags = bm.tags.join(' ');
+      },
+      immediate: true
+    }
+  },
+
+  methods: {
+    emitCancel() {
       this.reset();
-      this.$emit('bookmark-added');
+      this.$emit('cancel');
     },
 
     reset() {
@@ -104,6 +164,24 @@ Vue.component('b-add-bookmark', {
       this.url = '';
       this.description = '';
       this.tags = '';
+    },
+
+    saveBookmark() {
+      saveBookmark(
+        {
+          title: this.title,
+          url: this.url,
+          description: this.description,
+          tags: this.tagsArray
+        },
+        this.isEditing ? this.bookmark.url : null
+      );
+
+      if (!this.isEditing) {
+        this.reset();
+      }
+
+      this.$emit('bookmark-saved');
     }
   }
 });
