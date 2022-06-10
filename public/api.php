@@ -33,4 +33,23 @@ if (key_exists('read', $_REQUEST)) {
   }
 
   http_response_code(201);
+} else if (key_exists('get_archive', $_REQUEST)) {
+  try {
+    $data = get_archive();
+    http_response_code(200);
+    echo $data;
+  } catch (\Exception $e) {
+    error_log($e->getMessage());
+    http_response_code(500);
+  }
+} else if (key_exists('archive', $_REQUEST) && $body) {
+  $data = json_decode($body, true);
+  
+  try {
+    get_archival_link($data['url'], $data['id']);
+    http_response_code(200);
+  } catch(\Exception $e) {
+    error_log($e->getMessage());
+    http_response_code(500);
+  }
 }

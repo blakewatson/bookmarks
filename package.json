@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "initialize": "node initData.js",
     "serve": "sh serve.sh"
   },
   "keywords": [],

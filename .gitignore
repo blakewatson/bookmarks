@@ -7,3 +7,4 @@ vendor
 ._*
 protected/data
 protected/errors.log
+.env

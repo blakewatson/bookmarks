@@ -1,11 +1,5 @@
-import {
-  deleteBookmark,
-  getArchives,
-  read,
-  saveBookmark,
-  store
-} from './store.js';
-import { dateDisplay, getArchiveUrl } from './utils.js';
+import { deleteBookmark, read, saveBookmark, store } from './store.js';
+import { archive, dateDisplay } from './utils.js';
 
 Vue.component('b-no-token', {
   template: '#b-no-token',
@@ -86,10 +80,6 @@ Vue.component('b-bookmark', {
   }),
 
   computed: {
-    archiveUrl() {
-      return getArchiveUrl(this.bookmark.id);
-    },
-
     createdDate() {
       return dateDisplay(this.bookmark.updated);
     },
@@ -188,7 +178,9 @@ Vue.component('b-bookmark-form', {
         bookmark.id = this.bookmark.id;
       }
 
-      saveBookmark(bookmark);
+      saveBookmark(bookmark)
+        .then(() => archive(bookmark.url))
+        .then(() => console.log('saved and archived!'));
 
       if (!this.isEditing) {
         this.reset();
@@ -221,9 +213,6 @@ new Vue({
       read()
         .then(() => {
           this.hasToken = true;
-        })
-        .then(() => {
-          getArchives();
         })
         .catch(() => {
           this.hasToken = false;

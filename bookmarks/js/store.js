@@ -3,8 +3,7 @@ import { assignRandomId, fetcher } from './utils.js';
 export const store = Vue.observable({
   bookmarks: [],
   tags: [], // [string]
-  bookmarksToTags: [], // [bookmarkId, tagName]
-  archives: []
+  bookmarksToTags: [] // [bookmarkId, tagName]
 });
 
 export const deleteBookmark = (bookmark) => {
@@ -61,10 +60,7 @@ export const saveBookmark = (bookmark) => {
 
   handleBookmarkTags(newBookmark);
 
-  const writePromise = write();
-  writePromise.then(() => archiveBookmark(newBookmark));
-
-  return writePromise;
+  return write();
 };
 
 /**
@@ -89,18 +85,6 @@ export const handleBookmarkTags = (bookmark) => {
 
   // update the tags array
   setTagsArray();
-};
-
-export const archiveBookmark = (bookmark) => {
-  if (!bookmark.id || !bookmark.url) {
-    console.error('Must provide a bookmark with an id and url.');
-    return;
-  }
-
-  fetcher('api.php?archive', {
-    method: 'POST',
-    body: JSON.stringify({ id: bookmark.id, url: bookmark.url })
-  });
 };
 
 export const removeBookmarkFromAllTags = (bookmarkId) => {
@@ -132,7 +116,7 @@ export const deleteTag = (tagName) => {
 };
 
 export const read = () => {
-  return fetcher('api.php?read')
+  return fetcher('/api.php?read')
     .then((resp) => {
       return resp.json();
     })
@@ -153,21 +137,12 @@ export const write = () => {
     bookmarksToTags: store.bookmarksToTags
   };
 
-  return fetcher('api.php?write', {
+  return fetcher('/api.php?write', {
     method: 'POST',
     body: JSON.stringify(data)
   })
     .then((resp) => {
       console.log(resp);
-    })
-    .catch((err) => console.error(err));
-};
-
-export const getArchives = () => {
-  return fetcher('api.php?get_archive')
-    .then((resp) => resp.json())
-    .then((data) => {
-      store.archives = data;
     })
     .catch((err) => console.error(err));
 };

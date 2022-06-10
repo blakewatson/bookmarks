@@ -1,4 +1,6 @@
-import { store } from './store.js';
+export const archive = (url) => {
+  return fetch(`https://web.archive.org/save/${url}`);
+};
 
 export const dateDisplay = (date) => {
   if (!date) {
@@ -35,17 +37,6 @@ export const fetcher = (url, options = {}) => {
       'BW-TOKEN': token
     }
   });
-};
-
-export const getArchiveUrl = (bookmarkId) => {
-  if (!bookmarkId) {
-    return null;
-  }
-
-  return (
-    store.archives.find((a) => a.bookmark_id === bookmarkId)?.archive_url ||
-    null
-  );
 };
 
 export const MONTHS = [
