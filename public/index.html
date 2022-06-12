@@ -151,16 +151,13 @@
 
     <!-- Login form -->
     <template id="b-no-token">
-      <form class="pure-form pure-form-stacked">
+      <form class="pure-form pure-form-stacked" @submit.prevent="addToken">
         <label>Token</label>
         <input class="pure-input-2-3" type="text" v-model="token" />
-        <button
-          @click="addToken"
-          class="pure-button pure-button-primary"
-          type="button"
-        >
+        <button class="pure-button pure-button-primary" type="submit">
           Go
         </button>
+        <p class="error" v-if="message">{{ message }}</p>
       </form>
     </template>
   </body>

@@ -62,7 +62,19 @@ export const saveBookmark = (bookmark) => {
   handleBookmarkTags(newBookmark);
 
   const writePromise = write();
-  writePromise.then(() => archiveBookmark(newBookmark));
+
+  writePromise
+    .then((data) => {
+      console.log(data.ok);
+      console.log('write completed');
+      setTimeout(() => {
+        archiveBookmark(newBookmark);
+      }, 2000);
+    })
+    .catch((err) => {
+      console.log('error in write catch');
+      console.error(err);
+    });
 
   return writePromise;
 };
@@ -97,10 +109,21 @@ export const archiveBookmark = (bookmark) => {
     return;
   }
 
-  fetcher('api.php?archive', {
+  const resp = fetcher('/api/archive-url', {
     method: 'POST',
-    body: JSON.stringify({ id: bookmark.id, url: bookmark.url })
+    body: JSON.stringify({ bookmarkId: bookmark.id, url: bookmark.url })
   });
+
+  // resp
+  //   .then((r) => r.json())
+  //   .then((r) => {
+  //     if (r.error) {
+  //       console.error(r.error);
+  //     }
+  //   })
+  //   .catch((err) => console.error('caught', err));
+
+  return resp;
 };
 
 export const removeBookmarkFromAllTags = (bookmarkId) => {
@@ -132,7 +155,9 @@ export const deleteTag = (tagName) => {
 };
 
 export const read = () => {
-  return fetcher('api.php?read')
+  const resp = fetcher('/api/bookmarks');
+
+  resp
     .then((resp) => {
       return resp.json();
     })
@@ -144,6 +169,8 @@ export const read = () => {
     .catch((err) => {
       console.error(err);
     });
+
+  return resp;
 };
 
 export const write = () => {
@@ -153,18 +180,22 @@ export const write = () => {
     bookmarksToTags: store.bookmarksToTags
   };
 
-  return fetcher('api.php?write', {
+  const resp = fetcher('/api/write', {
     method: 'POST',
     body: JSON.stringify(data)
-  })
-    .then((resp) => {
-      console.log(resp);
-    })
-    .catch((err) => console.error(err));
+  });
+
+  // resp
+  //   .then((resp) => {
+  //     console.log(resp);
+  //   })
+  //   .catch((err) => console.error(err));
+
+  return resp;
 };
 
 export const getArchives = () => {
-  return fetcher('api.php?get_archive')
+  return fetcher('/api/archives')
     .then((resp) => resp.json())
     .then((data) => {
       store.archives = data;

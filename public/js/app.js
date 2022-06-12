@@ -5,19 +5,35 @@ import {
   saveBookmark,
   store
 } from './store.js';
-import { dateDisplay, getArchiveUrl } from './utils.js';
+import { dateDisplay, fetcher, getArchiveUrl } from './utils.js';
 
 Vue.component('b-no-token', {
   template: '#b-no-token',
 
   data: () => ({
+    message: '',
     token: ''
   }),
 
   methods: {
     addToken() {
-      window.localStorage.setItem('bw-token', this.token);
-      this.$emit('token-added');
+      this.message = '';
+
+      fetcher('/ping', {}, this.token)
+        .then((res) => {
+          if (res.status === 401) {
+            this.message = 'Nope';
+          } else if (res.status !== 200) {
+            this.message = 'Server error';
+          } else {
+            this.message = '';
+            window.localStorage.setItem('bw-token', this.token);
+            this.$emit('token-added');
+          }
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     }
   }
 });
@@ -181,7 +197,7 @@ Vue.component('b-bookmark-form', {
         title: this.title,
         url: this.url,
         description: this.description,
-        tags: this.tagsArray
+        tags: [...this.tagsArray]
       };
 
       if (this.bookmark?.id) {

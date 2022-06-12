@@ -21,19 +21,25 @@ export const dateDisplay = (date) => {
   return `${month} ${day}, ${year}`;
 };
 
-export const fetcher = (url, options = {}) => {
+export const fetcher = (url, options = {}, tokenOverride = null) => {
   const token = window.localStorage.getItem('bw-token');
 
-  if (!token) {
+  if (!token && !tokenOverride) {
     console.error('fetcher: missing token');
     return null;
   }
 
+  const headers = {
+    'BW-TOKEN': tokenOverride || token
+  };
+
+  if (options?.method?.toLowerCase() === 'post') {
+    headers['Content-Type'] = 'application/json';
+  }
+
   return fetch(url, {
     ...options,
-    headers: {
-      'BW-TOKEN': token
-    }
+    headers
   });
 };
 

@@ -30,6 +30,7 @@ body {
 
 .container {
   margin: 2em auto;
+  padding: 0 1.5em;
   max-width: 960px;
 }
 
@@ -66,6 +67,12 @@ a:hover {
 
 .muted {
   color: var(--text-muted);
+}
+
+.error,
+.danger,
+.red {
+  color: var(--red);
 }
 
 /* Bookmarks list
