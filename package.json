@@ -6,7 +6,7 @@
     "initialize": "node initData.js",
     "dev": "nodemon protected/server.js",
     "serve": "npm run dev",
-    "prod": "node protected/server.js"
+    "prod": "NODE_ENV=production node protected/server.js"
   },
   "keywords": [],
   "author": "",
