@@ -17,7 +17,7 @@
       <b-no-token v-if="!hasToken" @token-added="hasToken = true"></b-no-token>
 
       <template v-else>
-        <b-dashboard></b-dashboard>
+        <b-dashboard class="m-b-xl"></b-dashboard>
       </template>
     </div>
 
@@ -30,12 +30,27 @@
           <summary class="pure-button">Add Bookmark</summary>
 
           <b-bookmark-form
+            :selected-tags="selectedTags"
             @bookmark-saved="closeBookmarkForm"
             @cancel="closeBookmarkForm"
           ></b-bookmark-form>
         </details>
 
-        <b-bookmarks :bookmarks="bookmarks" class="m-t-xl"></b-bookmarks>
+        <h1 class="title strong m-t-lg m-b-md">
+          <span v-if="!selectedTags.length">All bookmarks</span>
+          <span v-else>
+            Tag(s):
+            <span class="selected-tag" v-for="tag in selectedTags">
+              <a @click.prevent="deselectTag(tag)" href="#">{{ tag }}</a>
+            </span>
+          </span>
+        </h1>
+
+        <!-- default dashboard view -->
+        <b-bookmarks
+          :bookmarks="bookmarks"
+          v-if="view === ViewType.home"
+        ></b-bookmarks>
       </div>
     </template>
 
@@ -58,6 +73,7 @@
       <div class="bookmark-item">
         <template v-if="isEditing">
           <b-bookmark-form
+            :key="bookmark.id"
             :bookmark="bookmark"
             @bookmark-saved="isEditing = false"
             @cancel="onCancel"
@@ -78,7 +94,7 @@
 
             <ul class="tags m-none m-b-sm">
               <li class="m-r-sm m-t-none m-b-none" v-for="tag in bookmark.tags">
-                <a href="#">{{ tag }}</a>
+                <a @click.prevent="onClickOfTag(tag)" href="#">{{ tag }}</a>
               </li>
             </ul>
 

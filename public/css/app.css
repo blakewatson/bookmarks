@@ -65,6 +65,15 @@ a:hover {
   text-decoration: underline;
 }
 
+.title {
+  font-size: 1.2em;
+  font-weight: normal;
+}
+
+.strong {
+  font-weight: bold;
+}
+
 .muted {
   color: var(--text-muted);
 }
@@ -78,13 +87,12 @@ a:hover {
 /* Bookmarks list
 --------------------------------------- */
 
-.bookmark-item + .bookmark-item {
-  border-top: 1px solid var(--border-color);
+.selected-tag:not(:last-child)::after {
+  content: ', ';
 }
 
-.title {
-  font-size: 1.2em;
-  font-weight: normal;
+.bookmark-item + .bookmark-item {
+  border-top: 1px solid var(--border-color);
 }
 
 .url {

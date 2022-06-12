@@ -1,11 +1,16 @@
 import {
   deleteBookmark,
+  deselectTag,
   getArchives,
   read,
   saveBookmark,
+  selectTag,
+  state,
   store
 } from './store.js';
 import { clamp, dateDisplay, fetcher, getArchiveUrl } from './utils.js';
+
+const eventBus = new Vue();
 
 Vue.component('b-no-token', {
   template: '#b-no-token',
@@ -38,18 +43,41 @@ Vue.component('b-no-token', {
   }
 });
 
+const ViewType = {
+  home: 'home'
+};
+
 Vue.component('b-dashboard', {
   template: '#b-dashboard',
 
+  data: () => ({
+    view: ViewType.home,
+    ViewType: ViewType
+  }),
+
   computed: {
     bookmarks() {
-      return store.bookmarks;
+      if (!this.selectedTags.length) {
+        return store.bookmarks;
+      }
+
+      return store.bookmarks.filter((bm) =>
+        this.selectedTags.every((tag) => bm.tags.includes(tag))
+      );
+    },
+
+    selectedTags() {
+      return [...state.selectedTags];
     }
   },
 
   methods: {
     closeBookmarkForm() {
       this.$refs['addBookmarkForm'].removeAttribute('open');
+    },
+
+    deselectTag(tag) {
+      deselectTag(tag);
     }
   }
 });
@@ -146,6 +174,10 @@ Vue.component('b-bookmark', {
 
     onClickOfEdit() {
       this.isEditing = true;
+    },
+
+    onClickOfTag(tag) {
+      selectTag(tag);
     }
   }
 });
@@ -175,8 +207,10 @@ Vue.component('b-pagination', {
 
   methods: {
     emitInput() {
-      this.$emit('input', this.valueLocal);
-      this.$nextTick(() => this.scrollWithDelay());
+      if (this.value !== this.valueLocal) {
+        this.$emit('input', this.valueLocal);
+        this.$nextTick(() => this.scrollWithDelay());
+      }
     },
 
     pageNext() {
@@ -191,7 +225,7 @@ Vue.component('b-pagination', {
 
     scrollWithDelay() {
       setTimeout(() => {
-        window.scrollTo(0, 1);
+        window.scrollTo(0, 0);
       }, 0);
     }
   }
@@ -201,7 +235,8 @@ Vue.component('b-bookmark-form', {
   template: '#b-bookmark-form',
 
   props: {
-    bookmark: Object
+    bookmark: Object,
+    selectedTags: Array
   },
 
   data: () => ({
@@ -232,6 +267,18 @@ Vue.component('b-bookmark-form', {
         this.url = bm.url;
         this.description = bm.description;
         this.tags = bm.tags.join(' ');
+      },
+      immediate: true
+    },
+
+    selectedTags: {
+      handler(tags) {
+        if (tags?.length) {
+          this.tags = this.selectedTags.join(' ');
+          return;
+        }
+
+        this.tags = '';
       },
       immediate: true
     }
