@@ -87,6 +87,14 @@ a:hover {
   font-weight: normal;
 }
 
+.url {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 .tags {
   padding-left: 0;
   list-style: none;
