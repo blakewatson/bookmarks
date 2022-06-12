@@ -171,14 +171,6 @@ Vue.component('b-pagination', {
       },
       immediate: true
     }
-
-    // valueLocal(newValue) {
-    //   this.$nextTick(() => {
-    //     setTimeout(() => {
-    //       window.scrollTo(0, 0);
-    //     }, 100);
-    //   });
-    // }
   },
 
   methods: {
