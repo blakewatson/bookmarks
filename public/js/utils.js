@@ -1,5 +1,9 @@
 import { store } from './store.js';
 
+export const clamp = (value, min, max) => {
+  return Math.min(max, Math.max(min, value));
+};
+
 export const dateDisplay = (date) => {
   if (!date) {
     console.error('Date display did no receive a valid date.');

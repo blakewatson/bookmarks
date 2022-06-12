@@ -5,7 +5,7 @@ import {
   saveBookmark,
   store
 } from './store.js';
-import { dateDisplay, fetcher, getArchiveUrl } from './utils.js';
+import { clamp, dateDisplay, fetcher, getArchiveUrl } from './utils.js';
 
 Vue.component('b-no-token', {
   template: '#b-no-token',
@@ -59,6 +59,8 @@ Vue.component('b-bookmarks', {
 
   data: () => ({
     order: 'desc', // or asc
+    page: 1,
+    perPage: 20,
     sortBy: 'created' // or created
   }),
 
@@ -67,6 +69,11 @@ Vue.component('b-bookmarks', {
   },
 
   computed: {
+    paginatedBookmarks() {
+      const offset = (this.page - 1) * this.perPage;
+      return this.sortedBookmarks.slice(offset, offset + this.perPage);
+    },
+
     sortedBookmarks() {
       const bookmarks = [...this.bookmarks];
 
@@ -81,6 +88,10 @@ Vue.component('b-bookmarks', {
       }
 
       return bookmarks;
+    },
+
+    total() {
+      return Math.ceil(this.bookmarks.length / this.perPage);
     }
   },
 
@@ -135,6 +146,61 @@ Vue.component('b-bookmark', {
 
     onClickOfEdit() {
       this.isEditing = true;
+    }
+  }
+});
+
+Vue.component('b-pagination', {
+  template: '#b-pagination',
+
+  props: {
+    total: Number,
+    value: Number
+  },
+
+  data: () => ({
+    valueLocal: 0
+  }),
+
+  watch: {
+    value: {
+      handler(newValue, oldValue) {
+        if (newValue !== oldValue) {
+          this.valueLocal = newValue;
+        }
+      },
+      immediate: true
+    }
+
+    // valueLocal(newValue) {
+    //   this.$nextTick(() => {
+    //     setTimeout(() => {
+    //       window.scrollTo(0, 0);
+    //     }, 100);
+    //   });
+    // }
+  },
+
+  methods: {
+    emitInput() {
+      this.$emit('input', this.valueLocal);
+      this.$nextTick(() => this.scrollWithDelay());
+    },
+
+    pageNext() {
+      this.valueLocal = clamp(this.valueLocal + 1, 1, this.total);
+      this.emitInput();
+    },
+
+    pagePrevious() {
+      this.valueLocal = clamp(this.valueLocal - 1, 1, this.total);
+      this.emitInput();
+    },
+
+    scrollWithDelay() {
+      setTimeout(() => {
+        window.scrollTo(0, 1);
+      }, 0);
     }
   }
 });

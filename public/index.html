@@ -46,8 +46,10 @@
           :bookmark="bm"
           :key="bm.id"
           class="p-t-md p-b-md"
-          v-for="bm in sortedBookmarks"
+          v-for="bm in paginatedBookmarks"
         ></b-bookmark>
+
+        <b-pagination :total="total" v-model="page"></b-pagination>
       </div>
     </template>
 
@@ -146,6 +148,30 @@
             Cancel
           </button>
         </div>
+      </form>
+    </template>
+
+    <template id="b-pagination">
+      <form @submit.prevent class="pagination pure-form m-t-lg m-b-lg">
+        <button @click="pagePrevious" class="pure-button m-r-md" type="button">
+          Previous
+        </button>
+
+        <span>
+          <input
+            :max="total"
+            @keydown.enter="emitInput"
+            class="pure-input pagination-input"
+            min="1"
+            type="number"
+            v-model.number="valueLocal"
+          />
+          of {{ total }}
+        </span>
+
+        <button @click="pageNext" class="pure-button m-l-md" type="button">
+          Next
+        </button>
       </form>
     </template>
 

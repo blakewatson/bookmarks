@@ -116,6 +116,18 @@ a:hover {
   color: var(--red);
 }
 
+/* Pagination
+--------------------------------------- */
+.pagination {
+  display: flex;
+  justify-content: center;
+}
+
+.pagination-input {
+  width: 5em;
+  text-align: center;
+}
+
 /* Forms 
 --------------------------------------- */
 
@@ -127,6 +139,7 @@ a:hover {
 @media (prefers-color-scheme: dark) {
   #app .pure-form input[type='text'],
   #app .pure-form input[type='url'],
+  #app .pure-form input[type='number'],
   #app .pure-form textarea {
     background-color: #333;
     border-color: darkgray;
@@ -136,6 +149,7 @@ a:hover {
 
   #app .pure-form input[type='text']:focus,
   #app .pure-form input[type='url']:focus,
+  #app .pure-form input[type='number']:focus,
   #app .pure-form textarea:focus {
     border-color: #129fea;
   }
