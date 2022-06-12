@@ -7,10 +7,8 @@ const { archiveUrl } = require('./archiver');
 
 const app = express();
 
-const publicPath = process.env.PUBLIC_PATH;
-const publicAbsolute = path.resolve(__dirname + '/../public');
-const protectedPath = process.env.PROTECTED_PATH;
-const protectedAbsolute = path.resolve(__dirname);
+const publicPath = path.resolve(__dirname, process.env.PUBLIC_PATH);
+const dataDir = path.resolve(__dirname, process.env.DATA_PATH);
 
 // custom auth middleware
 const auth = (req, res, next) => {
@@ -40,17 +38,17 @@ app.use(express.static(publicPath));
 app.use(auth);
 
 app.get('/api/bookmarks', (req, res) => {
-  res.sendFile(`${protectedAbsolute}/data/bookmarks.json`);
+  res.sendFile(`${dataDir}/bookmarks.json`);
 });
 
 app.post('/api/write', (req, res) => {
   const data = JSON.stringify(req.body);
-  fs.writeFileSync(`${protectedAbsolute}/data/bookmarks.json`, data);
+  fs.writeFileSync(`${dataDir}/bookmarks.json`, data);
   res.status(201).json({ success: true, message: 'Bookmarks saved.' });
 });
 
 app.get('/api/archives', (req, res) => {
-  res.sendFile(`${protectedAbsolute}/data/archives.json`);
+  res.sendFile(`${dataDir}/archives.json`);
 });
 
 app.post('/api/archive-url', async (req, res) => {
@@ -67,9 +65,7 @@ app.post('/api/archive-url', async (req, res) => {
   }
 
   // get the archives
-  const archives = JSON.parse(
-    fs.readFileSync(`${protectedAbsolute}/data/archives.json`)
-  );
+  const archives = JSON.parse(fs.readFileSync(`${dataDir}/archives.json`));
 
   if (archives.findIndex((a) => a.bookmark_id === bookmarkId) > -1) {
     res

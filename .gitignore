@@ -5,6 +5,6 @@ build
 dist
 vendor
 ._*
-protected/data
-protected/errors.log
+/data
+/errors.log
 .env

@@ -4,9 +4,9 @@
   "description": "",
   "scripts": {
     "initialize": "node initData.js",
-    "dev": "nodemon protected/server.js",
+    "dev": "nodemon app/server.js",
     "serve": "npm run dev",
-    "prod": "NODE_ENV=production node protected/server.js"
+    "prod": "NODE_ENV=production node app/server.js"
   },
   "keywords": [],
   "author": "",
