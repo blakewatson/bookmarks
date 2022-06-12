@@ -35,6 +35,8 @@ const auth = (req, res, next) => {
 
 app.use(express.json());
 app.use(express.static(publicPath));
+// for nfsn's let's encrypt challenges
+app.use(express.static(path.resolve(__dirname, '../../public')));
 app.use(auth);
 
 app.get('/api/bookmarks', (req, res) => {
