@@ -273,7 +273,11 @@ Vue.component('b-bookmark-form', {
 
     selectedTags: {
       handler(tags) {
-        if (tags?.length) {
+        if (!tags) {
+          return;
+        }
+
+        if (tags.length) {
           this.tags = this.selectedTags.join(' ');
           return;
         }

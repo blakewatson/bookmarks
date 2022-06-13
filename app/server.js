@@ -86,6 +86,9 @@ app.post('/api/archive-url', async (req, res) => {
 
   result.bookmark_id = bookmarkId;
   archives.push(result);
+
+  const data = JSON.stringify(archives);
+  fs.writeFileSync(`${dataDir}/archives.json`, data);
 });
 
 app.get('/ping', (req, res) => {
