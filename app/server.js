@@ -33,7 +33,7 @@ const auth = (req, res, next) => {
   res.status(401).json({ success: false, error: 'Auth failed.' });
 };
 
-app.use(express.json());
+app.use(express.json({ limit: '5mb' }));
 app.use(express.static(publicPath));
 // for nfsn's let's encrypt challenges
 app.use(express.static(path.resolve(__dirname, '../../public')));
@@ -54,8 +54,6 @@ app.get('/api/archives', (req, res) => {
 });
 
 app.post('/api/archive-url', async (req, res) => {
-  console.log('Request received');
-
   const bookmarkId = req.body.bookmarkId;
   const url = req.body.url;
 
@@ -88,8 +86,6 @@ app.post('/api/archive-url', async (req, res) => {
 
   result.bookmark_id = bookmarkId;
   archives.push(result);
-
-  console.log(archives);
 });
 
 app.get('/ping', (req, res) => {

@@ -79,8 +79,6 @@ export const saveBookmark = (bookmark) => {
 
   writePromise
     .then((data) => {
-      console.log(data.ok);
-      console.log('write completed');
       setTimeout(() => {
         archiveBookmark(newBookmark);
       }, 2000);
