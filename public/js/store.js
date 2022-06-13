@@ -2,6 +2,7 @@ import { assignRandomId, fetcher } from './utils.js';
 
 // non-persistent store for view state
 export const state = Vue.observable({
+  searchQuery: '',
   selectedTags: []
 });
 

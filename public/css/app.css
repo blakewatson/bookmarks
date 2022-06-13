@@ -112,7 +112,8 @@ a:hover {
   display: inline-block;
 }
 
-.bookmark-meta {
+.bookmark-meta,
+.url {
   font-size: 0.875rem;
 }
 

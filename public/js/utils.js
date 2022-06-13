@@ -25,6 +25,16 @@ export const dateDisplay = (date) => {
   return `${month} ${day}, ${year}`;
 };
 
+export const debounce = (fn, wait) => {
+  let timeout;
+
+  return function (...args) {
+    const context = this;
+    clearTimeout(timeout);
+    timeout = setTimeout(() => fn.apply(context, args), wait);
+  };
+};
+
 export const fetcher = (url, options = {}, tokenOverride = null) => {
   const token = window.localStorage.getItem('bw-token');
 

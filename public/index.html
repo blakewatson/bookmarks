@@ -46,6 +46,9 @@
           </span>
         </h1>
 
+        <!-- search control -->
+        <b-search class="m-b-lg"></b-search>
+
         <!-- default dashboard view -->
         <b-bookmarks
           :bookmarks="bookmarks"
@@ -64,7 +67,13 @@
           v-for="bm in paginatedBookmarks"
         ></b-bookmark>
 
-        <b-pagination :total="total" v-model="page"></b-pagination>
+        <p v-if="!paginatedBookmarks.length">No results.</p>
+
+        <b-pagination
+          :total="total"
+          v-if="total > 1"
+          v-model="page"
+        ></b-pagination>
       </div>
     </template>
 
@@ -90,17 +99,17 @@
               <a :href="bookmark.url" class="url muted">{{ bookmark.url }}</a>
             </p>
 
-            <!-- <div class="description m-b-sm">{{ bookmark.description }}</div> -->
+            <div class="description m-b-sm">{{ bookmark.description }}</div>
 
-            <ul class="tags m-none m-b-sm">
+            <ul class="tags m-none m-t-md m-b-sm">
               <li class="m-r-sm m-t-none m-b-none" v-for="tag in bookmark.tags">
                 <a @click.prevent="onClickOfTag(tag)" href="#">{{ tag }}</a>
               </li>
             </ul>
 
-            <div class="pure-g bookmark-meta">
+            <div class="bookmark-meta pure-g m-t-md">
               <div class="pure-u p-r-md">
-                <time>{{ updatedDate }}</time>
+                <time>{{ createdDate }}</time>
               </div>
 
               <div class="pure-u bookmark-actions">
@@ -167,6 +176,20 @@
       </form>
     </template>
 
+    <!-- Search control -->
+    <template id="b-search">
+      <div class="pure-form">
+        <input
+          autofocus
+          class="pure-input-1 search-input"
+          placeholder="Search"
+          type="text"
+          v-model="search"
+        />
+      </div>
+    </template>
+
+    <!-- Pagination control for lists -->
     <template id="b-pagination">
       <form @submit.prevent class="pagination pure-form m-t-lg m-b-lg">
         <button @click="pagePrevious" class="pure-button m-r-md" type="button">

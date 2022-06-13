@@ -1,3 +1,4 @@
+import { search, updateSearchQueryDebounced } from './search.js';
 import {
   deleteBookmark,
   deselectTag,
@@ -57,14 +58,32 @@ Vue.component('b-dashboard', {
 
   computed: {
     bookmarks() {
-      if (!this.selectedTags.length) {
+      if (!this.selectedTags.length && !this.searchQuery) {
         return store.bookmarks;
       }
 
-      return store.bookmarks.filter((bm) =>
-        this.selectedTags.every((tag) => bm.tags.includes(tag))
-      );
+      let results = [];
+
+      if (this.selectedTags.length) {
+        results = store.bookmarks.filter((bm) =>
+          this.selectedTags.every((tag) => bm.tags.includes(tag))
+        );
+      }
+
+      if (this.searchQuery) {
+        results = search(results);
+      }
+
+      return results;
     },
+
+    searchQuery() {
+      return state.searchQuery;
+    },
+
+    // searchResults() {
+    //   return search(state.searchQuery);
+    // },
 
     selectedTags() {
       return [...state.selectedTags];
@@ -146,7 +165,7 @@ Vue.component('b-bookmark', {
     },
 
     createdDate() {
-      return dateDisplay(this.bookmark.updated);
+      return dateDisplay(this.bookmark.created);
     },
 
     updatedDate() {
@@ -178,6 +197,20 @@ Vue.component('b-bookmark', {
 
     onClickOfTag(tag) {
       selectTag(tag);
+    }
+  }
+});
+
+Vue.component('b-search', {
+  template: '#b-search',
+
+  data: () => ({
+    search: ''
+  }),
+
+  watch: {
+    search(value) {
+      updateSearchQueryDebounced(this.search);
     }
   }
 });
@@ -332,6 +365,10 @@ new Vue({
   }),
 
   computed: {
+    state() {
+      return state;
+    },
+
     store() {
       return store;
     }
