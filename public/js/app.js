@@ -1,4 +1,8 @@
-import { search, updateSearchQueryDebounced } from './search.js';
+import {
+  createLunrIndex,
+  search,
+  updateSearchQueryDebounced
+} from './search.js';
 import {
   deleteBookmark,
   deselectTag,
@@ -87,6 +91,25 @@ Vue.component('b-dashboard', {
 
     selectedTags() {
       return [...state.selectedTags];
+    }
+  },
+
+  watch: {
+    // this watcher is for quickly adding tags via the search input
+    searchQuery(value) {
+      if (!value) {
+        return;
+      }
+
+      const tags = value
+        .toLowerCase()
+        .split(' ')
+        .filter((t) => t.startsWith('#') && t.length > 1);
+
+      if (tags.length) {
+        state.selectedTags.forEach((tag) => deselectTag(tag));
+        tags.forEach((tag) => selectTag(tag.slice(1)));
+      }
     }
   },
 
@@ -383,11 +406,13 @@ new Vue({
       read()
         .then(() => {
           this.hasToken = true;
+          return getArchives();
         })
         .then(() => {
-          getArchives();
+          createLunrIndex();
         })
-        .catch(() => {
+        .catch((err) => {
+          console.error(err);
           this.hasToken = false;
         });
     }
