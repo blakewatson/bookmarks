@@ -59,7 +59,7 @@ const checkJobStatus = async (jobId) => {
 // repeatedly check capture job status and return result when completed
 const tryJobStatus = (jobId) => {
   return new Promise(async (resolve, reject) => {
-    const delay = 5000;
+    const delay = 10000;
     let tries = 20;
 
     const checker = async () => {
