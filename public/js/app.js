@@ -62,7 +62,7 @@ Vue.component('b-dashboard', {
 
   computed: {
     bookmarks() {
-      if (!this.selectedTags.length && !this.searchQuery) {
+      if (!this.selectedTags.length && !this.searchQueryMinusTags) {
         return store.bookmarks;
       }
 
@@ -74,7 +74,7 @@ Vue.component('b-dashboard', {
         );
       }
 
-      if (this.searchQuery) {
+      if (this.searchQueryMinusTags) {
         results = search(results);
       }
 
@@ -83,6 +83,14 @@ Vue.component('b-dashboard', {
 
     searchQuery() {
       return state.searchQuery;
+    },
+
+    searchQueryMinusTags() {
+      return state.searchQuery
+        .split(' ')
+        .filter((t) => !t.startsWith('#'))
+        .join(' ')
+        .trim();
     },
 
     // searchResults() {
@@ -95,21 +103,9 @@ Vue.component('b-dashboard', {
   },
 
   watch: {
-    // this watcher is for quickly adding tags via the search input
-    searchQuery(value) {
-      if (!value) {
-        return;
-      }
-
-      const tags = value
-        .toLowerCase()
-        .split(' ')
-        .filter((t) => t.startsWith('#') && t.length > 1);
-
-      if (tags.length) {
-        state.selectedTags.forEach((tag) => deselectTag(tag));
-        tags.forEach((tag) => selectTag(tag.slice(1)));
-      }
+    bookmarks(bookmarks) {
+      state.currentBookmarks = bookmarks;
+      state.currentBookmarkIds = bookmarks.map((bm) => bm.id);
     }
   },
 
@@ -162,6 +158,13 @@ Vue.component('b-bookmarks', {
 
     total() {
       return Math.ceil(this.bookmarks.length / this.perPage);
+    }
+  },
+
+  watch: {
+    // when the bookmarks change, reset to page one
+    bookmarks(bookmarks) {
+      this.page = 1;
     }
   },
 
@@ -228,12 +231,43 @@ Vue.component('b-search', {
   template: '#b-search',
 
   data: () => ({
-    search: ''
+    search: '',
+    tags: []
   }),
 
   watch: {
     search(value) {
       updateSearchQueryDebounced(this.search);
+    }
+  },
+
+  methods: {
+    clearSearch() {
+      this.search = '';
+      this.processTags();
+    },
+
+    onKeyUp(event) {
+      this.processTags();
+    },
+
+    processTags() {
+      const tags = this.search
+        .toLowerCase()
+        .split(' ')
+        .filter((t) => t.startsWith('#') && t.length > 1);
+
+      this.tags.forEach((tag) => {
+        deselectTag(tag);
+      });
+
+      this.tags = [];
+
+      tags.forEach((t) => {
+        const tag = t.slice(1);
+        selectTag(tag);
+        this.tags.push(tag);
+      });
     }
   }
 });
@@ -376,6 +410,62 @@ Vue.component('b-bookmark-form', {
       }
 
       this.$emit('bookmark-saved');
+    }
+  }
+});
+
+Vue.component('b-tags', {
+  template: '#b-tags',
+
+  data: () => ({
+    limit: 20,
+    showAll: false
+  }),
+
+  computed: {
+    tags() {
+      const tags = store.tags
+        .map((tag) => {
+          return {
+            name: tag,
+            count: this.getTagCount(tag)
+          };
+        })
+        .filter((tag) => tag.count);
+
+      tags.sort((a, b) => b.count - a.count);
+
+      return tags.slice(0, this.limit);
+    }
+  },
+
+  methods: {
+    getTagCount(tag) {
+      return store.bookmarksToTags.filter(
+        (bt) => bt[1] === tag && state.currentBookmarkIds.includes(bt[0])
+      ).length;
+    },
+
+    isTagSelected(tag) {
+      return state.selectedTags.includes(tag);
+    },
+
+    onClickOfShowAll() {
+      if (this.limit) {
+        this.limit = undefined; // end of sequence
+        return;
+      }
+
+      this.limit = 20;
+    },
+
+    onClickOfTag(tag) {
+      if (state.selectedTags.includes(tag)) {
+        deselectTag(tag);
+        return;
+      }
+
+      selectTag(tag);
     }
   }
 });

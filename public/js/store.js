@@ -2,12 +2,16 @@ import { assignRandomId, fetcher } from './utils.js';
 
 // non-persistent store for view state
 export const state = Vue.observable({
+  currentBookmarkIds: [],
+  currentBookmarks: [],
   searchQuery: '',
   selectedTags: []
 });
 
 export const selectTag = (tag) => {
-  state.selectedTags = Array.from(new Set([...state.selectedTags, tag]));
+  if (store.tags.find((t) => t === tag)) {
+    state.selectedTags = Array.from(new Set([...state.selectedTags, tag]));
+  }
 };
 
 export const deselectTag = (tag) => {

@@ -50,11 +50,19 @@
         <!-- search control -->
         <b-search class="m-b-lg"></b-search>
 
-        <!-- default dashboard view -->
-        <b-bookmarks
-          :bookmarks="bookmarks"
-          v-if="view === ViewType.home"
-        ></b-bookmarks>
+        <div class="pure-g">
+          <div class="pure-u pure-u-3-4">
+            <!-- default dashboard view -->
+            <b-bookmarks
+              :bookmarks="bookmarks"
+              v-if="view === ViewType.home"
+            ></b-bookmarks>
+          </div>
+
+          <div class="pure-u pure-u-1-4 p-l-md">
+            <b-tags></b-tags>
+          </div>
+        </div>
       </div>
     </template>
 
@@ -179,15 +187,49 @@
 
     <!-- Search control -->
     <template id="b-search">
-      <div class="pure-form">
+      <div class="pure-form search-form">
         <input
+          @keyup="onKeyUp"
           autofocus
-          class="pure-input-1 search-input"
+          class="pure-input-1 search-input m-r-sm"
           placeholder="Search"
           type="text"
           v-model="search"
         />
+
+        <button @click="clearSearch" class="pure-button" type="button">
+          Clear
+        </button>
       </div>
+    </template>
+
+    <!-- Tags list -->
+    <template id="b-tags">
+      <ul class="pure-menu-list">
+        <li class="pure-menu-item">
+          <a @click.prevent="onClickOfShowAll" href="#" class="pure-menu-link">
+            <span v-if="limit"><strong>Top Tags</strong></span>
+            <span v-else><strong>All Tags</strong></span>
+          </a>
+        </li>
+
+        <li :key="tag.name" class="pure-menu-item" v-for="tag in tags">
+          <a
+            :class="{ 'pure-menu-disabled': isTagSelected(tag.name) }"
+            @click.prevent="onClickOfTag(tag.name)"
+            class="pure-menu-link"
+            href="#"
+            >{{ tag.name }} ({{ tag.count }})</a
+          >
+        </li>
+
+        <li class="pure-menu-item">
+          <a @click.prevent="onClickOfShowAll" href="#" class="pure-menu-link">
+            <span v-if="limit">Show All</span>
+            <span v-else>Show Top</span>
+          </a>
+        </li>
+      </ul>
     </template>
 
     <!-- Pagination control for lists -->

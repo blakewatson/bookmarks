@@ -84,6 +84,17 @@ a:hover {
   color: var(--red);
 }
 
+/* Search control
+--------------------------------------- */
+
+.search-form {
+  display: flex;
+}
+
+.search-input {
+  width: 100%;
+}
+
 /* Bookmarks list
 --------------------------------------- */
 
@@ -161,5 +172,20 @@ a:hover {
   #app .pure-form input[type='number']:focus,
   #app .pure-form textarea:focus {
     border-color: #129fea;
+  }
+}
+
+/* Menu
+--------------------------------------- */
+
+@media (prefers-color-scheme: dark) {
+  .pure-menu-link {
+    color: var(--text-muted);
+  }
+
+  .pure-menu-active > .pure-menu-link,
+  .pure-menu-link:focus,
+  .pure-menu-link:hover {
+    background: #1a1a1a;
   }
 }
