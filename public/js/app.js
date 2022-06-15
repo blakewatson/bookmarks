@@ -56,6 +56,8 @@ Vue.component('b-dashboard', {
   template: '#b-dashboard',
 
   data: () => ({
+    showAddForm: false,
+    urlFormData: null,
     view: ViewType.home,
     ViewType: ViewType
   }),
@@ -111,11 +113,42 @@ Vue.component('b-dashboard', {
 
   methods: {
     closeBookmarkForm() {
-      this.$refs['addBookmarkForm'].removeAttribute('open');
+      this.showAddForm = false;
     },
 
     deselectTag(tag) {
       deselectTag(tag);
+    },
+
+    onToggleOfAddForm(event) {
+      this.showAddForm = event.target.open;
+    }
+  },
+
+  created() {
+    if (window.location.search) {
+      let parts = window.location.search
+        .slice(1)
+        .split('&')
+        .map((pair) => {
+          pair = pair.split('=');
+          return { key: pair[0], value: pair[1] };
+        });
+
+      const title = parts.find((p) => p.key === 'title').value;
+      const url = parts.find((p) => p.key === 'url').value;
+
+      this.urlFormData = {
+        title: decodeURIComponent(title),
+        url: decodeURIComponent(url)
+      };
+
+      this.showAddForm = true;
+
+      // todo: make this suck less
+      // setTimeout(() => {
+      //   this.$refs['addBookmarkForm'].setAttribute('open', true);
+      // }, 500);
     }
   }
 });
@@ -326,6 +359,7 @@ Vue.component('b-bookmark-form', {
 
   props: {
     bookmark: Object,
+    formData: Object,
     selectedTags: Array
   },
 
@@ -357,6 +391,18 @@ Vue.component('b-bookmark-form', {
         this.url = bm.url;
         this.description = bm.description;
         this.tags = bm.tags.join(' ');
+      },
+      immediate: true
+    },
+
+    formData: {
+      handler(data) {
+        if (!data) {
+          return;
+        }
+
+        this.title = data.title;
+        this.url = data.url;
       },
       immediate: true
     },

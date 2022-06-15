@@ -27,10 +27,15 @@
     <!-- Dashboard -->
     <template id="b-dashboard">
       <div>
-        <details ref="addBookmarkForm">
-          <summary class="pure-button">Add Bookmark</summary>
+        <details :open="showAddForm" @toggle="onToggleOfAddForm">
+          <summary class="pure-button">
+            Add Bookmark
+            <span v-if="showAddForm">⏷</span>
+            <span v-else>⏵</span>
+          </summary>
 
           <b-bookmark-form
+            :form-data="urlFormData"
             :selected-tags="selectedTags"
             @bookmark-saved="closeBookmarkForm"
             @cancel="closeBookmarkForm"
