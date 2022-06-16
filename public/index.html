@@ -18,7 +18,7 @@
       <b-no-token v-if="!hasToken" @token-added="hasToken = true"></b-no-token>
 
       <template v-else>
-        <b-dashboard class="m-b-xl" v-if="loaded"></b-dashboard>
+        <b-dashboard class="mb-xl" v-if="loaded"></b-dashboard>
         <div class="loader-main loader" v-else></div>
       </template>
     </div>
@@ -29,7 +29,7 @@
     <template id="b-dashboard">
       <div>
         <details :open="showAddForm" @toggle="onToggleOfAddForm">
-          <summary class="pure-button m-b-sm">
+          <summary class="pure-button mb-sm">
             Add Bookmark
             <span class="button-arrow" v-if="showAddForm">⏷</span>
             <span class="button-arrow" v-else>⏵</span>
@@ -44,7 +44,7 @@
           ></b-bookmark-form>
         </details>
 
-        <h1 class="title strong m-t-lg m-b-md">
+        <h1 class="title strong mt-lg mb-md">
           <span v-if="!selectedTags.length">All bookmarks</span>
           <span v-else>
             Tag(s):
@@ -55,7 +55,7 @@
         </h1>
 
         <!-- search control -->
-        <b-search class="m-b-lg"></b-search>
+        <b-search class="mb-lg"></b-search>
 
         <div class="pure-g">
           <div class="pure-u pure-u-3-4">
@@ -66,7 +66,7 @@
             ></b-bookmarks>
           </div>
 
-          <div class="pure-u pure-u-1-4 p-l-md">
+          <div class="pure-u pure-u-1-4 pl-md">
             <b-tags></b-tags>
           </div>
         </div>
@@ -79,7 +79,7 @@
         <b-bookmark
           :bookmark="bm"
           :key="bm.id"
-          class="p-t-md p-b-md"
+          class="pt-md pb-md"
           v-for="bm in paginatedBookmarks"
         ></b-bookmark>
 
@@ -107,33 +107,31 @@
 
         <template v-else>
           <article>
-            <h2 class="title m-t-none m-b-xs">
+            <h2 class="title mt-none mb-xs">
               <a :href="bookmark.url">{{ bookmark.title }}</a>
             </h2>
 
-            <p class="m-b-sm m-t-none">
+            <p class="mb-sm mt-none">
               <a :href="bookmark.url" class="url muted">{{ bookmark.url }}</a>
             </p>
 
-            <div class="description m-b-sm">{{ bookmark.description }}</div>
+            <div class="description mb-sm">{{ bookmark.description }}</div>
 
-            <ul class="tags m-none m-t-md m-b-sm">
-              <li class="m-r-sm m-t-none m-b-none" v-for="tag in bookmark.tags">
+            <ul class="tags m-none mt-md mb-sm">
+              <li class="mr-sm mt-none mb-none" v-for="tag in bookmark.tags">
                 <a @click.prevent="onClickOfTag(tag)" href="#">{{ tag }}</a>
               </li>
             </ul>
 
-            <div class="bookmark-meta pure-g m-t-md">
-              <div class="pure-u p-r-md">
+            <div class="bookmark-meta pure-g mt-md">
+              <div class="pure-u pr-md">
                 <time>{{ createdDate }}</time>
               </div>
 
               <div class="pure-u bookmark-actions">
-                <a :href="archiveUrl" class="m-r-sm" v-if="archiveUrl"
-                  >cached</a
-                >
+                <a :href="archiveUrl" class="mr-sm" v-if="archiveUrl">cached</a>
 
-                <a @click.prevent="onClickOfEdit" class="m-r-sm" href="#"
+                <a @click.prevent="onClickOfEdit" class="mr-sm" href="#"
                   >edit</a
                 >
 
@@ -157,46 +155,49 @@
     <!-- Bookmark form -->
     <template id="b-bookmark-form">
       <form @submit.prevent="saveBookmark" class="pure-form pure-form-stacked">
-        <fieldset class="pure-group bookmark-form-fieldset">
-          <input
-            class="pure-input-1"
-            type="text"
-            placeholder="Title"
-            v-model="title"
-          />
-          <input
-            class="pure-input-1"
-            type="url"
-            placeholder="URL"
-            v-model="url"
-          />
-          <textarea
-            class="pure-input-1"
-            placeholder="Description"
-            rows="3"
-            v-model="description"
-          ></textarea>
-          <input
-            @keydown="onTagKeyDown"
-            class="pure-input-1"
-            ref="tagInput"
-            type="text"
-            placeholder="Tags"
-            v-model="tags"
-          />
+        <div class="fieldset-wrap">
+          <fieldset class="pure-group bookmark-form-fieldset">
+            <input
+              class="pure-input-1"
+              type="text"
+              placeholder="Title"
+              v-model="title"
+            />
+            <input
+              class="pure-input-1"
+              type="url"
+              placeholder="URL"
+              v-model="url"
+            />
+            <textarea
+              class="pure-input-1"
+              placeholder="Description"
+              rows="3"
+              v-model="description"
+            ></textarea>
+            <input
+              @keydown="onTagKeyDown"
+              class="pure-input-1"
+              ref="tagInput"
+              type="text"
+              placeholder="Tags"
+              v-model="tags"
+            />
+          </fieldset>
+
           <b-tag-autocomplete
             :text="tags"
             @autocomplete="onTagAutocomplete"
             ref="tagAutocomplete"
           ></b-tag-autocomplete>
-        </fieldset>
+        </div>
 
-        <div class="m-t-sm">
+        <div class="mt-sm">
           <button class="pure-button pure-button-primary" type="submit">
             Save Bookmark
           </button>
 
-          <button @click="emitCancel" class="pure-button m-l-sm" type="button">
+          <button @click="emitCancel" class="pure-button ml-sm" type="button">
             Cancel
           </button>
         </div>
@@ -208,7 +209,7 @@
       <form @submit.prevent="onSubmit" class="pure-form search-form">
         <input
           autofocus
-          class="pure-input-1 search-input m-r-sm"
+          class="pure-input-1 search-input mr-sm"
           placeholder="Type and hit enter to search"
           type="text"
           v-model="search"
@@ -251,8 +252,8 @@
 
     <!-- Pagination control for lists -->
     <template id="b-pagination">
-      <form @submit.prevent class="pagination pure-form m-t-lg m-b-lg">
-        <button @click="pagePrevious" class="pure-button m-r-md" type="button">
+      <form @submit.prevent class="pagination pure-form mt-lg mb-lg">
+        <button @click="pagePrevious" class="pure-button mr-md" type="button">
           Previous
         </button>
 
@@ -268,7 +269,7 @@
           of {{ total }}
         </span>
 
-        <button @click="pageNext" class="pure-button m-l-md" type="button">
+        <button @click="pageNext" class="pure-button ml-md" type="button">
           Next
         </button>
       </form>
@@ -276,7 +277,10 @@
 
     <!-- Tag autocompletion menu -->
     <template id="b-tag-autocomplete">
-      <ul class="pure-menu-list tag-autocomplete" v-if="showTagSuggestions">
+      <ul
+        class="pure-menu-list tag-autocomplete"
+        v-if="showTagSuggestions && tagSuggestions.length"
+      >
         <li
           :class="{ 'pure-menu-selected': selectedTag === i }"
           class="pure-menu-item"

@@ -151,16 +151,18 @@ a:hover {
 /* Tag Autocomplete
 --------------------------------------- */
 
-.bookmark-form-fieldset {
+.fieldset-wrap {
   position: relative;
 }
 
 .tag-autocomplete {
   position: absolute;
   left: 0;
-  bottom: 100%4;
+  top: calc(100% - 0.75rem);
+  margin: 0;
   border: 1px solid var(--text-muted);
   border-top: none;
+  box-sizing: border-box;
   min-width: 250px;
   background-color: var(--bg);
   z-index: 10;
@@ -176,6 +178,7 @@ a:hover {
 
 .button-arrow {
   font-size: 1.2em;
+  line-height: 1em;
 }
 
 @media (prefers-color-scheme: dark) {
