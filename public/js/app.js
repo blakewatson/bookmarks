@@ -97,10 +97,6 @@ Vue.component('b-dashboard', {
         .trim();
     },
 
-    // searchResults() {
-    //   return search(state.searchQuery);
-    // },
-
     selectedTags() {
       return [...state.selectedTags];
     }
@@ -116,6 +112,7 @@ Vue.component('b-dashboard', {
   methods: {
     closeBookmarkForm() {
       this.showAddForm = false;
+      this.urlFormData = null;
     },
 
     deselectTag(tag) {
@@ -124,6 +121,10 @@ Vue.component('b-dashboard', {
 
     onToggleOfAddForm(event) {
       this.showAddForm = event.target.open;
+
+      if (!this.showAddForm) {
+        this.urlFormData = null;
+      }
     }
   },
 
@@ -147,10 +148,7 @@ Vue.component('b-dashboard', {
 
       this.showAddForm = true;
 
-      // todo: make this suck less
-      // setTimeout(() => {
-      //   this.$refs['addBookmarkForm'].setAttribute('open', true);
-      // }, 500);
+      window.history.replaceState({}, null, window.location.origin);
     }
   }
 });
