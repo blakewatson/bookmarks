@@ -1,4 +1,4 @@
-import { store } from './store.js';
+import { state, store } from './store.js';
 
 export const clamp = (value, min, max) => {
   return Math.min(max, Math.max(min, value));
@@ -66,6 +66,45 @@ export const getArchiveUrl = (bookmarkId) => {
     store.archives.find((a) => a.bookmark_id === bookmarkId)?.archive_url ||
     null
   );
+};
+
+export const getTagCount = (tag, resultsOnly = false) => {
+  let count = 0;
+
+  for (const bt of store.bookmarksToTags) {
+    if (bt[1] !== tag) {
+      continue;
+    }
+
+    if (resultsOnly && !state.currentBookmarkIds.slice(0, 10).includes(bt[0])) {
+      continue;
+    }
+
+    count++;
+  }
+
+  return count;
+};
+
+export const getTagsSortedByCount = (resultsOnly = false) => {
+  const tags = [];
+
+  for (const tag of store.tags) {
+    let count = getTagCount(tag, resultsOnly);
+
+    if (!count) {
+      continue;
+    }
+
+    tags.push({
+      name: tag,
+      count
+    });
+  }
+
+  tags.sort((a, b) => b.count - a.count);
+
+  return tags;
 };
 
 export const MONTHS = [

@@ -9,7 +9,13 @@ import {
   state,
   store
 } from './store.js';
-import { clamp, dateDisplay, fetcher, getArchiveUrl } from './utils.js';
+import {
+  clamp,
+  dateDisplay,
+  fetcher,
+  getArchiveUrl,
+  getTagsSortedByCount
+} from './utils.js';
 
 const eventBus = new Vue();
 
@@ -421,6 +427,42 @@ Vue.component('b-bookmark-form', {
       this.$emit('cancel');
     },
 
+    onTagAutocomplete(tag) {
+      const tags = this.tags.split(' ').filter((_) => _);
+
+      if (!tags.length) {
+        return;
+      }
+
+      tags[tags.length - 1] = tag;
+      this.tags = tags.join(' ');
+
+      this.$refs['tagInput'].focus();
+    },
+
+    onTagKeyDown(event) {
+      if (event.code === 'ArrowDown') {
+        event.preventDefault();
+        this.$refs['tagAutocomplete'].incrementSelectedTag();
+      }
+
+      if (event.code === 'ArrowUp') {
+        event.preventDefault();
+        this.$refs['tagAutocomplete'].decrementSelectedTag();
+      }
+
+      if (event.code === 'Enter') {
+        event.preventDefault();
+        this.$refs['tagAutocomplete'].onClickOfSuggestion();
+        this.tags += ' ';
+      }
+
+      if (event.code === 'Escape') {
+        event.preventDefault();
+        this.$refs['tagAutocomplete'].showTagSuggestions = false;
+      }
+    },
+
     reset() {
       this.title = '';
       this.url = '';
@@ -461,28 +503,12 @@ Vue.component('b-tags', {
 
   computed: {
     tags() {
-      const tags = store.tags
-        .map((tag) => {
-          return {
-            name: tag,
-            count: this.getTagCount(tag)
-          };
-        })
-        .filter((tag) => tag.count);
-
-      tags.sort((a, b) => b.count - a.count);
-
-      return tags.slice(0, this.limit);
+      const resultsOnly = Boolean(state.selectedTags.length);
+      return getTagsSortedByCount(resultsOnly).slice(0, this.limit);
     }
   },
 
   methods: {
-    getTagCount(tag) {
-      return store.bookmarksToTags.filter(
-        (bt) => bt[1] === tag && state.currentBookmarkIds.includes(bt[0])
-      ).length;
-    },
-
     isTagSelected(tag) {
       return state.selectedTags.includes(tag);
     },
@@ -507,11 +533,106 @@ Vue.component('b-tags', {
   }
 });
 
+Vue.component('b-tag-autocomplete', {
+  template: '#b-tag-autocomplete',
+
+  props: {
+    text: String
+  },
+
+  data: () => ({
+    limit: 5,
+    selectedTag: 0,
+    showTagSuggestions: false
+  }),
+
+  computed: {
+    tagSuggestions() {
+      const terms = this.text.split(' ').filter((_) => _);
+
+      if (!terms.length) {
+        return [];
+      }
+
+      const term = terms.at(-1);
+
+      return getTagsSortedByCount()
+        .filter((tag) => tag.name.startsWith(term))
+        .slice(0, this.limit);
+    }
+  },
+
+  watch: {
+    tagSuggestions(suggestions) {
+      if (suggestions.length) {
+        this.showTagSuggestions = true;
+      }
+    },
+
+    text(val) {
+      if (val.endsWith(' ')) {
+        this.showTagSuggestions = false;
+      }
+    }
+  },
+
+  methods: {
+    decrementSelectedTag() {
+      this.selectedTag = (this.selectedTag - 1) % this.limit;
+    },
+
+    incrementSelectedTag() {
+      this.selectedTag = (this.selectedTag + 1) % this.limit;
+    },
+
+    onClickOfSuggestion(tag = null) {
+      if (!tag) {
+        this.$emit('autocomplete', this.tagSuggestions[this.selectedTag].name);
+        this.selectedTag = 0;
+        return;
+      }
+
+      this.selectedTag = 0;
+      this.$emit('autocomplete', tag.name);
+    }
+  },
+
+  mounted() {
+    // window.addEventListener('keyup', (event) => {
+    //   if (!this.showTagSuggestions) {
+    //     return;
+    //   }
+    //   if (event.code === 'Escape') {
+    //     this.showTagSuggestions = false;
+    //   }
+    //   if (event.code === 'ArrowDown') {
+    //     event.preventDefault();
+    //     event.stopPropagation();
+    //     this.selectedTag =
+    //       this.selectedTag < this.limit - 1 ? this.selectedTag + 1 : 0;
+    //   }
+    //   if (event.code === 'ArrowUp') {
+    //     event.preventDefault();
+    //     event.stopPropagation();
+    //     this.selectedTag =
+    //       this.selectedTag > 0 ? this.selectedTag - 1 : this.limit - 1;
+    //   }
+    //   if (event.code === 'Enter') {
+    //     event.preventDefault();
+    //     event.stopPropagation();
+    //     const tag = this.tagSuggestions[this.selectedTag];
+    //     this.onClickOfSuggestion(tag);
+    //   }
+    // });
+  }
+});
+
 new Vue({
   el: '#app',
 
   data: () => ({
-    hasToken: false
+    hasToken: false,
+    loaded: false
   }),
 
   computed: {
@@ -533,6 +654,7 @@ new Vue({
       read()
         .then(() => {
           this.hasToken = true;
+          this.loaded = true;
           return getArchives();
         })
         .then(() => {

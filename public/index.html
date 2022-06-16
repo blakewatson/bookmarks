@@ -18,7 +18,8 @@
       <b-no-token v-if="!hasToken" @token-added="hasToken = true"></b-no-token>
 
       <template v-else>
-        <b-dashboard class="m-b-xl"></b-dashboard>
+        <b-dashboard class="m-b-xl" v-if="loaded"></b-dashboard>
+        <div class="loader-main loader" v-else></div>
       </template>
     </div>
 
@@ -39,6 +40,7 @@
             :selected-tags="selectedTags"
             @bookmark-saved="closeBookmarkForm"
             @cancel="closeBookmarkForm"
+            v-if="showAddForm"
           ></b-bookmark-form>
         </details>
 
@@ -155,7 +157,7 @@
     <!-- Bookmark form -->
     <template id="b-bookmark-form">
       <form @submit.prevent="saveBookmark" class="pure-form pure-form-stacked">
-        <fieldset class="pure-group">
+        <fieldset class="pure-group bookmark-form-fieldset">
           <input
             class="pure-input-1"
             type="text"
@@ -170,15 +172,23 @@
           />
           <textarea
             class="pure-input-1"
+            placeholder="Description"
             rows="3"
             v-model="description"
           ></textarea>
           <input
+            @keydown="onTagKeyDown"
             class="pure-input-1"
+            ref="tagInput"
             type="text"
             placeholder="Tags"
             v-model="tags"
           />
+          <b-tag-autocomplete
+            :text="tags"
+            @autocomplete="onTagAutocomplete"
+            ref="tagAutocomplete"
+          ></b-tag-autocomplete>
         </fieldset>
 
         <div class="m-t-sm">
@@ -262,6 +272,24 @@
           Next
         </button>
       </form>
+    </template>
+
+    <!-- Tag autocompletion menu -->
+    <template id="b-tag-autocomplete">
+      <ul class="pure-menu-list tag-autocomplete" v-if="showTagSuggestions">
+        <li
+          :class="{ 'pure-menu-selected': selectedTag === i }"
+          class="pure-menu-item"
+          v-for="(tag, i) in tagSuggestions"
+        >
+          <a
+            @click.prevent="onClickOfSuggestion(tag)"
+            href="#"
+            class="pure-menu-link"
+            >{{ tag.name }} ({{tag.count}})</a
+          >
+        </li>
+      </ul>
     </template>
 
     <!-- Login form -->
