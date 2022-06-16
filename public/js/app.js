@@ -1,8 +1,4 @@
-import {
-  createLunrIndex,
-  search,
-  updateSearchQueryDebounced
-} from './search.js';
+import { createLunrIndex, search } from './search.js';
 import {
   deleteBookmark,
   deselectTag,
@@ -268,19 +264,14 @@ Vue.component('b-search', {
     tags: []
   }),
 
-  watch: {
-    search(value) {
-      updateSearchQueryDebounced(this.search);
-    }
-  },
-
   methods: {
     clearSearch() {
       this.search = '';
       this.processTags();
     },
 
-    onKeyUp(event) {
+    onSubmit(event) {
+      state.searchQuery = this.search;
       this.processTags();
     },
 

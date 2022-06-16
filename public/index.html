@@ -28,10 +28,10 @@
     <template id="b-dashboard">
       <div>
         <details :open="showAddForm" @toggle="onToggleOfAddForm">
-          <summary class="pure-button">
+          <summary class="pure-button m-b-sm">
             Add Bookmark
-            <span v-if="showAddForm">⏷</span>
-            <span v-else>⏵</span>
+            <span class="button-arrow" v-if="showAddForm">⏷</span>
+            <span class="button-arrow" v-else>⏵</span>
           </summary>
 
           <b-bookmark-form
@@ -155,30 +155,33 @@
     <!-- Bookmark form -->
     <template id="b-bookmark-form">
       <form @submit.prevent="saveBookmark" class="pure-form pure-form-stacked">
-        <input
-          class="pure-input-1"
-          type="text"
-          placeholder="Title"
-          v-model="title"
-        />
-        <input
-          class="pure-input-1"
-          type="url"
-          placeholder="URL"
-          v-model="url"
-        />
-        <textarea
-          class="pure-input-1"
-          rows="3"
-          v-model="description"
-        ></textarea>
-        <input
-          class="pure-input-1"
-          type="text"
-          placeholder="Tags"
-          v-model="tags"
-        />
-        <div class="m-t-md">
+        <fieldset class="pure-group">
+          <input
+            class="pure-input-1"
+            type="text"
+            placeholder="Title"
+            v-model="title"
+          />
+          <input
+            class="pure-input-1"
+            type="url"
+            placeholder="URL"
+            v-model="url"
+          />
+          <textarea
+            class="pure-input-1"
+            rows="3"
+            v-model="description"
+          ></textarea>
+          <input
+            class="pure-input-1"
+            type="text"
+            placeholder="Tags"
+            v-model="tags"
+          />
+        </fieldset>
+
+        <div class="m-t-sm">
           <button class="pure-button pure-button-primary" type="submit">
             Save Bookmark
           </button>
@@ -192,12 +195,11 @@
 
     <!-- Search control -->
     <template id="b-search">
-      <div class="pure-form search-form">
+      <form @submit.prevent="onSubmit" class="pure-form search-form">
         <input
-          @keyup="onKeyUp"
           autofocus
           class="pure-input-1 search-input m-r-sm"
-          placeholder="Search"
+          placeholder="Type and hit enter to search"
           type="text"
           v-model="search"
         />
@@ -205,7 +207,7 @@
         <button @click="clearSearch" class="pure-button" type="button">
           Clear
         </button>
-      </div>
+      </form>
     </template>
 
     <!-- Tags list -->

@@ -156,6 +156,10 @@ a:hover {
   margin-bottom: 0.5em;
 }
 
+.button-arrow {
+  font-size: 1.2em;
+}
+
 @media (prefers-color-scheme: dark) {
   #app .pure-form input[type='text'],
   #app .pure-form input[type='url'],
