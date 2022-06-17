@@ -1,9 +1,75 @@
+const dotenv = require('dotenv');
+const fs = require('fs');
+const path = require('path');
 const fetch = require('node-fetch');
 
 const WAYBACK_URL = 'https://web.archive.org';
 const CAPTURE_URL = `${WAYBACK_URL}/save`;
 const STATUS_URL = `${CAPTURE_URL}/status`;
 const SNAPSHOT_URL = `${WAYBACK_URL}/web`;
+
+const readFile = (name) =>
+  JSON.parse(
+    fs.readFileSync(path.resolve(__dirname, `../data/${name}.json`), 'utf8')
+  );
+
+const writeFile = (name, data) =>
+  fs.writeFileSync(
+    path.resolve(__dirname, `../data/${name}.json`),
+    JSON.stringify(data)
+  );
+
+const backgroundArchiver = () => {
+  console.log('Started archiver');
+  const intervalTime =
+    parseInt(process.env.BACKGROUND_ARCHIVE_INTERVAL) || 1000 * 60 * 60;
+  archiveNextAvailableBookmark();
+  setInterval(archiveNextAvailableBookmark, intervalTime);
+};
+
+const archiveNextAvailableBookmark = async () => {
+  dotenv.config({ override: true });
+
+  if (process.env.BACKGROUND_ARCHIVER !== 'true') {
+    return;
+  }
+
+  const bookmark = getNextUrlToArchive();
+
+  console.log('Archiving ', bookmark.title);
+
+  if (!bookmark) {
+    return;
+  }
+
+  console.log('Requesting capture...');
+  const result = await archiveUrl(bookmark.url);
+
+  if (!result) {
+    console.log('No result');
+    return;
+  }
+
+  result.bookmark_id = bookmark.id;
+
+  console.log('Done', result);
+
+  const archives = readFile('archives');
+  archives.push(result);
+  writeFile('archives', archives);
+};
+
+const getNextUrlToArchive = () => {
+  const archives = readFile('archives');
+  const store = readFile('bookmarks');
+  const archivedBookmarkIds = archives.map((a) => a.bookmark_id);
+
+  const bookmark = store.bookmarks.find(
+    (bm) => !archivedBookmarkIds.includes(bm.id)
+  );
+
+  return bookmark || false;
+};
 
 const archiveUrl = async (url) => {
   try {
@@ -83,6 +149,8 @@ const tryJobStatus = (jobId) => {
     let timer = setTimeout(checker, delay);
   });
 };
+
+backgroundArchiver();
 
 module.exports = {
   archiveUrl,
