@@ -47,6 +47,9 @@ const archiveNextAvailableBookmark = async () => {
 
   if (!result) {
     console.log('No result');
+    const archives = readFile('archives');
+    archives.push({ bookmark_id: bookmark.id });
+    writeFile('archives', archives);
     return;
   }
 
@@ -76,6 +79,10 @@ const archiveUrl = async (url) => {
     const captureResp = await waybackCaptureRequest(url);
     const data = await captureResp.json();
     const jobId = data.job_id;
+
+    if (!jobId) {
+      return false;
+    }
 
     const result = await tryJobStatus(jobId);
 
