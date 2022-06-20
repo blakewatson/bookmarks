@@ -76,7 +76,7 @@ export const getTagCount = (tag, resultsOnly = false) => {
       continue;
     }
 
-    if (resultsOnly && !state.currentBookmarkIds.slice(0, 10).includes(bt[0])) {
+    if (resultsOnly && !state.currentBookmarkIds.includes(bt[0])) {
       continue;
     }
 
