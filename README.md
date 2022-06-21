@@ -35,7 +35,7 @@ You’re going to need a `.env` file with the following bits of data.
 - `PUBLIC_PATH` - this is the path to the public folder from the perspective of the `app` folder. By default this would be `../public`.
 - `DATA_PATH` - this is the path to a data folder that will contain the two JSON files that hold all of your data (more about that later). This is also from the perspective of the `app` folder.
 - `BACKGROUND_ARCHIVER` - set this to `true` if you would like the app too slowly archive all of your bookmarks on the Wayback Machine.
-- `BACKGROUND_ARCHIVE_INTERVAL` - this should be the number of milliseconds between each archival attempt. Personally, I set this to `60000` which is an hour.
+- `BACKGROUND_ARCHIVE_INTERVAL` - this should be the number of milliseconds between each archival attempt. Personally, I set this to `600000` which is an hour.
 
 I’m lazy so I didn’t bother automating the initial generation of the data files. You will need to create these manually.
 
