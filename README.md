@@ -24,10 +24,10 @@ There are some pretty big differences between this tool and Pinboard. The main o
 
 This is a NodeJS app that mostly shuttles JSON back and forth between the frontend application and the file system. Here is a rough explanation of how to set up the app.
 
-You’re going to need an `.env` file with the following bits of data.
+You’re going to need a `.env` file with the following bits of data.
 
 - `TOKEN_HASH` - you will need to generate this manually using the `bcryptjs` package on NPM. Make sure you keep the clear text version in your password manager or whatever.
-- `S3_ACCESS_KEY` and `S3_SECRET_KEY` - these are the keys needed access the Wayback Machine API. You can get those here: [https://archive.org/account/s3.php](https://archive.org/account/s3.php)
+- `S3_ACCESS_KEY` and `S3_SECRET_KEY` - these are the keys needed to access the Wayback Machine API. You can get those here: [https://archive.org/account/s3.php](https://archive.org/account/s3.php)
 - `PUBLIC_PATH` - this is the path to the public folder from the perspective of the `app` folder. By default this would be `../public`.
 - `DATA_PATH` - this is the path to a data folder that will contain the two JSON files that hold all of your data (more about that later). This is also from the perspective of the `app` folder.
 - `BACKGROUND_ARCHIVER` - set this to `true` if you would like the app too slowly archive all of your bookmarks on the Wayback Machine.
@@ -48,7 +48,7 @@ I’m lazy so I didn’t bother automating the initial generation of the data fi
 - `archives.json` should be created with the following initial content: `[]`
 - The `server` and `archiver` scripts need to have permission to write to your data folder.
 
-Once you have your credentials in the .env file end your initial data files created, you are ready to install packages and serve the app:
+Once you have your credentials in the `.env` file and your initial data files created, you are ready to install packages and serve the app:
 
 ```Bash
 npm install
@@ -61,11 +61,11 @@ That’s it! You might want to install the bookmarklet in your web browser (chan
 
 Mainly because I just wanted to. Also because it seems like the Pinboard archival mechanism hasn’t been working on my account for a little while now. And I like the idea of archiving them on Wayback Machine.
 
-Pinboard had sorted become the place where my bookmarks go to die. I thought making my own tool just for me might incentivize me to keep better bookmarks and also revisit them. I guess will see.
+Pinboard had sort of become the place where my bookmarks go to die. I thought making my own tool just for me might incentivize me to keep better bookmarks and also revisit them. I guess we'll see.
 
 Part of it is I’ve just been on a make-your-own-tools kick lately.
 
-¯\_(ツ)_/¯
+¯\\_(ツ)_/¯
 
 ## Should I use this?
 
