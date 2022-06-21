@@ -4,8 +4,8 @@ Bookmarks is a small web app designed to replace Pinboard as a bookmarking tool.
 
 ## Features
 
-- Saves bookmarks — title, URL, and description.
-- Has tags. You can filter your bookmarks by them.
+- Saves bookmarks — title, URL, description, and tags.
+- You can filter your bookmarks by one on more tags.
 - Has archival capabilities. Every bookmark is sent over to the Wayback Machine.
 - Has basic search capability. Search within tags.
 - Comes with a bookmarklet for quickly adding bookmarks.
