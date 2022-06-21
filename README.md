@@ -22,7 +22,7 @@ There are some pretty big differences between this tool and Pinboard. The main o
 
 ## Setup
 
-This is a NodeJS app that mostly shuttles JSON back and forth between the frontend application and profile system. Here is a rash explanation of how to set up the app.
+This is a NodeJS app that mostly shuttles JSON back and forth between the frontend application and the file system. Here is a rash explanation of how to set up the app.
 
 You’re going to need an `.env` file with the following bits of data.
 
