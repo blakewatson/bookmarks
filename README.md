@@ -2,6 +2,10 @@
 
 Bookmarks is a small web app designed to replace Pinboard as a bookmarking tool.
 
+<p align="center">
+<img alt="Screenshot of the application. A clean minimalist list of bookmarks." src="https://i.postimg.cc/nLCJ2x97/Screen-Shot-2022-06-20-at-11-45-45-PM.png" />
+</p>
+
 ## Features
 
 - Saves bookmarks — title, URL, description, and tags.
