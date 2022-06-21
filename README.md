@@ -54,9 +54,15 @@ I’m lazy so I didn’t bother automating the initial generation of the data fi
 
 Once you have your credentials in the `.env` file and your initial data files created, you are ready to install packages and serve the app:
 
-```Bash
+```bash
 npm install
 npm run serve
+```
+
+Or, if it’s ready for production:
+
+```bash
+npm run prod
 ```
 
 That’s it! You might want to install the bookmarklet in your web browser (change my bookmarks URL to whatever yours is).
