@@ -1,6 +1,6 @@
 # Bookmarks
 
-Bookmarks is a small web app designed to replace Pinboard as an bookmarking tool.
+Bookmarks is a small web app designed to replace Pinboard as a bookmarking tool.
 
 ## Features
 
