@@ -65,7 +65,7 @@ Pinboard had sort of become the place where my bookmarks go to die. I thought ma
 
 Part of it is I’ve just been on a make-your-own-tools kick lately.
 
-¯\\_(ツ)_/¯
+`¯\\_(ツ)_/¯`
 
 ## Should I use this?
 
