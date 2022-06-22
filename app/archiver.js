@@ -67,7 +67,14 @@ const getNextUrlToArchive = () => {
   const store = readFile('bookmarks');
   const archivedBookmarkIds = archives.map((a) => a.bookmark_id);
 
-  const bookmark = store.bookmarks.find(
+  const sortedBookmarks = [...store.bookmarks];
+  sortedBookmarks.sort((a, b) => {
+    const fieldA = a.created;
+    const fieldB = b.created;
+    return fieldA - fieldB;
+  });
+
+  const bookmark = sortedBookmarks.find(
     (bm) => !archivedBookmarkIds.includes(bm.id)
   );
 
