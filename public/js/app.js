@@ -4,6 +4,7 @@ import {
   deselectTag,
   getArchives,
   read,
+  readLocal,
   saveBookmark,
   selectTag,
   state,
@@ -648,6 +649,8 @@ new Vue({
       if (!val) {
         return;
       }
+
+      readLocal();
 
       read()
         .then(() => {

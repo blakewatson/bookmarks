@@ -182,6 +182,8 @@ export const read = () => {
       store.bookmarks = data.bookmarks;
       store.tags = data.tags;
       store.bookmarksToTags = data.bookmarksToTags;
+
+      writeLocal();
     })
     .catch((err) => {
       console.error(err);
@@ -209,6 +211,27 @@ export const write = () => {
   //   .catch((err) => console.error(err));
 
   return resp;
+};
+
+export const readLocal = () => {
+  const data = localStorage.getItem('bw-bookmarks');
+
+  if (!data) {
+    return false;
+  }
+
+  const localStore = JSON.parse(data);
+  store.bookmarks = localStore.bookmarks;
+  store.tags = localStore.tags;
+  store.bookmarksToTags = localStore.bookmarksToTags;
+  store.archives = localStore.archives;
+
+  return true;
+};
+
+export const writeLocal = () => {
+  const data = JSON.stringify(store);
+  localStorage.setItem('bw-bookmarks', data);
 };
 
 export const getArchives = () => {
