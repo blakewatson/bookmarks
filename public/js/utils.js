@@ -107,6 +107,15 @@ export const getTagsSortedByCount = (resultsOnly = false) => {
   return tags;
 };
 
+/**
+ * Remove trailing slash from string if it exists.
+ * @param {string} str
+ * @returns {string}
+ */
+export const removeTrailingSlash = (str) => {
+  return str.at(-1) === '/' ? str.slice(0, -1) : str;
+};
+
 export const MONTHS = [
   'Jan',
   'Feb',

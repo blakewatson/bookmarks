@@ -181,6 +181,26 @@ a:hover {
   line-height: 1em;
 }
 
+input[type='date'].error,
+input[type='date'].error:focus,
+input[type='date'].danger,
+input[type='date'].danger:focus,
+input[type='number'].error,
+input[type='number'].error:focus,
+input[type='number'].danger,
+input[type='number'].danger:focus,
+input[type='text'].error,
+input[type='text'].error:focus,
+input[type='text'].danger,
+input[type='text'].danger:focus,
+input[type='url'].error,
+input[type='url'].error:focus,
+input[type='url'].danger,
+input[type='url'].danger:focus {
+  border-color: var(--red);
+  color: unset;
+}
+
 @media (prefers-color-scheme: dark) {
   #app .pure-form input[type='text'],
   #app .pure-form input[type='url'],

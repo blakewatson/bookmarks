@@ -55,7 +55,7 @@
         </h1>
 
         <!-- search control -->
-        <b-search class="mb-lg"></b-search>
+        <b-search :search-query="searchQuery" class="mb-lg"></b-search>
 
         <div class="pure-g">
           <div class="pure-u pure-u-3-4">
@@ -164,6 +164,7 @@
               v-model="title"
             />
             <input
+              :class="{ error: isDupe }"
               class="pure-input-1"
               type="url"
               placeholder="URL"
@@ -191,6 +192,14 @@
             ref="tagAutocomplete"
           ></b-tag-autocomplete>
         </div>
+
+        <!-- dupe error message -->
+        <p class="error" v-if="isDupe">
+          This URL is already bookmarked.
+          <button @click="onClickOfViewDupe" class="pure-button" type="button">
+            View it
+          </button>
+        </p>
 
         <div class="mt-sm">
           <button class="pure-button pure-button-primary" type="submit">

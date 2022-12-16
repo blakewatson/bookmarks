@@ -15,7 +15,8 @@ import {
   dateDisplay,
   fetcher,
   getArchiveUrl,
-  getTagsSortedByCount
+  getTagsSortedByCount,
+  removeTrailingSlash
 } from './utils.js';
 
 const eventBus = new Vue();
@@ -82,6 +83,13 @@ Vue.component('b-dashboard', {
       if (this.searchQueryMinusTags) {
         results = search(results);
       }
+
+      // lunr chokes on urls so we'll do our own search
+      results = results.concat(
+        store.bookmarks.filter((bm) =>
+          bm.url.includes(this.searchQueryMinusTags)
+        )
+      );
 
       return results;
     },
@@ -264,10 +272,20 @@ Vue.component('b-bookmark', {
 Vue.component('b-search', {
   template: '#b-search',
 
+  props: ['searchQuery'],
+
   data: () => ({
     search: '',
     tags: []
   }),
+
+  watch: {
+    searchQuery(val) {
+      if (val !== this.search) {
+        this.search = val;
+      }
+    }
+  },
 
   methods: {
     clearSearch() {
@@ -354,7 +372,9 @@ Vue.component('b-bookmark-form', {
   template: '#b-bookmark-form',
 
   props: {
+    // received when editing existing bookmark
     bookmark: Object,
+    // received when creating new bookmark from url params
     formData: Object,
     selectedTags: Array
   },
@@ -363,7 +383,8 @@ Vue.component('b-bookmark-form', {
     title: '',
     url: '',
     description: '',
-    tags: ''
+    tags: '',
+    isDupe: false
   }),
 
   computed: {
@@ -417,6 +438,17 @@ Vue.component('b-bookmark-form', {
         this.tags = '';
       },
       immediate: true
+    },
+
+    url: {
+      handler(url) {
+        // check if this bookmark exists (ignore trailing slashes)
+        const dupe = store.bookmarks.find(
+          (bm) => removeTrailingSlash(bm.url) === removeTrailingSlash(url)
+        );
+        this.isDupe = Boolean(dupe);
+      },
+      immediate: true
     }
   },
 
@@ -424,6 +456,10 @@ Vue.component('b-bookmark-form', {
     emitCancel() {
       this.reset();
       this.$emit('cancel');
+    },
+
+    onClickOfViewDupe() {
+      state.searchQuery = this.url;
     },
 
     onTagAutocomplete(tag) {

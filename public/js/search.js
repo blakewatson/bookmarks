@@ -9,7 +9,7 @@ export const search = (bookmarks = []) => {
     return store.bookmarks;
   }
 
-  const list = bookmarks.length ? bookmarks : store.bookmarks;
+  const list = bookmarks.length ? [...bookmarks] : [...store.bookmarks];
   const query = state.searchQuery;
   let results = [];
 
@@ -17,7 +17,20 @@ export const search = (bookmarks = []) => {
   const terms = query
     .toLowerCase()
     .split(' ')
+    // remove tags
     .filter((t) => !t.startsWith('#'))
+    // remove url protocols
+    .map((t) => {
+      if (t.startsWith('http://')) {
+        return t.slice(7);
+      }
+
+      if (t.startsWith('https://')) {
+        return t.slice(8);
+      }
+
+      return t;
+    })
     .join(' ');
 
   if (!terms.length) {
@@ -42,7 +55,7 @@ export const search = (bookmarks = []) => {
 
 export const createLunrIndex = () => {
   searchIndex = window.lunr(function () {
-    this.ref = 'id';
+    this.ref('id');
     this.field('title', { boost: 2 });
     this.field('url');
     this.field('description');
