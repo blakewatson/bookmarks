@@ -10,6 +10,8 @@ const app = express();
 const publicPath = path.resolve(__dirname, process.env.PUBLIC_PATH);
 const dataDir = path.resolve(__dirname, process.env.DATA_PATH);
 
+const PORT = 8888;
+
 // custom auth middleware
 const auth = (req, res, next) => {
   if (req.url === '/favicon.ico') {
@@ -95,4 +97,8 @@ app.get('/ping', (req, res) => {
   res.sendStatus(200);
 });
 
-app.listen(8888);
+if (process.env.NODE_ENV === 'development') {
+  console.log(`Serving on http://localhost:${PORT}`);
+}
+
+app.listen(PORT);

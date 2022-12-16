@@ -433,8 +433,9 @@ Vue.component('b-bookmark-form', {
         return;
       }
 
+      // the last tag here represents the partially typed tag. replace it with the full tag name
       tags[tags.length - 1] = tag;
-      this.tags = tags.join(' ');
+      this.tags = tags.join(' ') + ' '; // space hides the dropdown
 
       this.$refs['tagInput'].focus();
     },
@@ -453,7 +454,6 @@ Vue.component('b-bookmark-form', {
       if (event.code === 'Enter') {
         event.preventDefault();
         this.$refs['tagAutocomplete'].onClickOfSuggestion();
-        this.tags += ' ';
       }
 
       if (event.code === 'Escape') {

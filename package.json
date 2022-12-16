@@ -5,7 +5,7 @@
   "scripts": {
     "backup": "node app/backup.js",
     "initialize": "node initData.js",
-    "dev": "nodemon app/server.js",
+    "dev": "NODE_ENV=development nodemon app/server.js",
     "serve": "npm run dev",
     "prod": "NODE_ENV=production node app/server.js"
   },
