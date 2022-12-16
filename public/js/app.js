@@ -289,7 +289,7 @@ Vue.component('b-search', {
 
   methods: {
     clearSearch() {
-      this.search = '';
+      state.searchQuery = '';
       this.processTags();
     },
 
