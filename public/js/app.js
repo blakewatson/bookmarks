@@ -721,7 +721,9 @@ new Vue({
         return;
       }
 
-      readLocal();
+      if (readLocal()) {
+        this.loaded = true;
+      }
 
       read()
         .then(() => {
