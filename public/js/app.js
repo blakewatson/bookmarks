@@ -56,6 +56,36 @@ const ViewType = {
   home: 'home'
 };
 
+const tagAutocompleteMixin = {
+  data: () => ({
+    tagAutocomplete: null
+  }),
+
+  methods: {
+    onTagKeyDown(event) {
+      if (event.code === 'ArrowDown') {
+        event.preventDefault();
+        this.tagAutocomplete.incrementSelectedTag();
+      }
+
+      if (event.code === 'ArrowUp') {
+        event.preventDefault();
+        this.tagAutocomplete.decrementSelectedTag();
+      }
+
+      if (event.code === 'Enter') {
+        event.preventDefault();
+        this.tagAutocomplete.onClickOfSuggestion();
+      }
+
+      if (event.code === 'Escape') {
+        event.preventDefault();
+        this.tagAutocomplete.showTagSuggestions = false;
+      }
+    }
+  }
+};
+
 Vue.component('b-dashboard', {
   template: '#b-dashboard',
 
@@ -72,12 +102,15 @@ Vue.component('b-dashboard', {
         return store.bookmarks;
       }
 
-      let results = [];
+      let results = []; // starting point for the search
+      let bookmarksWithTag = [];
 
       if (this.selectedTags.length) {
-        results = store.bookmarks.filter((bm) =>
+        bookmarksWithTag = store.bookmarks.filter((bm) =>
           this.selectedTags.every((tag) => bm.tags.includes(tag))
         );
+
+        results = [...bookmarksWithTag];
       }
 
       if (this.searchQueryMinusTags) {
@@ -90,6 +123,12 @@ Vue.component('b-dashboard', {
           bm.url.includes(this.searchQueryMinusTags)
         )
       );
+
+      // if the only search terms are hash tags, return all the bookmarks that
+      // match those tags
+      if (!this.searchQueryMinusTags.trim()) {
+        results = [...bookmarksWithTag];
+      }
 
       return results;
     },
@@ -274,10 +313,28 @@ Vue.component('b-search', {
 
   props: ['searchQuery'],
 
+  mixins: [tagAutocompleteMixin],
+
   data: () => ({
     search: '',
     tags: []
   }),
+
+  computed: {
+    // the tag autocomplete works by receiving a string of spac-separated tags.
+    // we need to provide that by cleaning up our search text and passing it to
+    // the autocomplete component.
+    computedTagsText() {
+      const terms = this.search.split(' ');
+
+      // if the latest search term isn't a hashtag, abort
+      if (!terms.at(-1).startsWith('#')) {
+        return '';
+      }
+
+      return terms.at(-1).slice(1);
+    }
+  },
 
   watch: {
     searchQuery(val) {
@@ -289,13 +346,32 @@ Vue.component('b-search', {
 
   methods: {
     clearSearch() {
+      this.search = '';
       state.searchQuery = '';
+      state.selectedTags = [];
       this.processTags();
+    },
+
+    onSearchKeyDown(event) {
+      const terms = this.search.split(' ');
+
+      // if the latest search term isn't a hashtag, abort
+      if (!terms.at(-1).startsWith('#')) {
+        return;
+      }
+
+      this.onTagKeyDown(event);
     },
 
     onSubmit(event) {
       state.searchQuery = this.search;
       this.processTags();
+    },
+
+    onTagAutocomplete(tag) {
+      const terms = this.search.split(' ');
+      terms[terms.length - 1] = `#${tag}`;
+      this.search = terms.join(' ') + ' ';
     },
 
     processTags() {
@@ -316,6 +392,10 @@ Vue.component('b-search', {
         this.tags.push(tag);
       });
     }
+  },
+
+  mounted() {
+    this.tagAutocomplete = this.$refs['tagAutocompleteSearch'];
   }
 });
 
@@ -378,6 +458,8 @@ Vue.component('b-bookmark-form', {
     formData: Object,
     selectedTags: Array
   },
+
+  mixins: [tagAutocompleteMixin],
 
   data: () => ({
     title: '',
@@ -476,28 +558,6 @@ Vue.component('b-bookmark-form', {
       this.$refs['tagInput'].focus();
     },
 
-    onTagKeyDown(event) {
-      if (event.code === 'ArrowDown') {
-        event.preventDefault();
-        this.$refs['tagAutocomplete'].incrementSelectedTag();
-      }
-
-      if (event.code === 'ArrowUp') {
-        event.preventDefault();
-        this.$refs['tagAutocomplete'].decrementSelectedTag();
-      }
-
-      if (event.code === 'Enter') {
-        event.preventDefault();
-        this.$refs['tagAutocomplete'].onClickOfSuggestion();
-      }
-
-      if (event.code === 'Escape') {
-        event.preventDefault();
-        this.$refs['tagAutocomplete'].showTagSuggestions = false;
-      }
-    },
-
     reset() {
       this.title = '';
       this.url = '';
@@ -525,6 +585,10 @@ Vue.component('b-bookmark-form', {
 
       this.$emit('bookmark-saved');
     }
+  },
+
+  mounted() {
+    this.tagAutocomplete = this.$refs['tagAutocomplete'];
   }
 });
 
@@ -630,35 +694,6 @@ Vue.component('b-tag-autocomplete', {
       this.selectedTag = 0;
       this.$emit('autocomplete', tag.name);
     }
-  },
-
-  mounted() {
-    // window.addEventListener('keyup', (event) => {
-    //   if (!this.showTagSuggestions) {
-    //     return;
-    //   }
-    //   if (event.code === 'Escape') {
-    //     this.showTagSuggestions = false;
-    //   }
-    //   if (event.code === 'ArrowDown') {
-    //     event.preventDefault();
-    //     event.stopPropagation();
-    //     this.selectedTag =
-    //       this.selectedTag < this.limit - 1 ? this.selectedTag + 1 : 0;
-    //   }
-    //   if (event.code === 'ArrowUp') {
-    //     event.preventDefault();
-    //     event.stopPropagation();
-    //     this.selectedTag =
-    //       this.selectedTag > 0 ? this.selectedTag - 1 : this.limit - 1;
-    //   }
-    //   if (event.code === 'Enter') {
-    //     event.preventDefault();
-    //     event.stopPropagation();
-    //     const tag = this.tagSuggestions[this.selectedTag];
-    //     this.onClickOfSuggestion(tag);
-    //   }
-    // });
   }
 });
 

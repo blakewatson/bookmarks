@@ -168,6 +168,10 @@ a:hover {
   z-index: 10;
 }
 
+.tag-autocomplete-search {
+  top: 100%;
+}
+
 /* Forms 
 --------------------------------------- */
 

@@ -215,8 +215,13 @@
 
     <!-- Search control -->
     <template id="b-search">
-      <form @submit.prevent="onSubmit" class="pure-form search-form">
+      <form
+        @submit.prevent="onSubmit"
+        class="pure-form search-form"
+        style="position: relative"
+      >
         <input
+          @keydown="onSearchKeyDown"
           autofocus
           class="pure-input-1 search-input mr-sm"
           placeholder="Type and hit enter to search"
@@ -227,6 +232,13 @@
         <button @click="clearSearch" class="pure-button" type="button">
           Clear
         </button>
+
+        <b-tag-autocomplete
+          :text="computedTagsText"
+          @autocomplete="onTagAutocomplete"
+          class="tag-autocomplete-search"
+          ref="tagAutocompleteSearch"
+        ></b-tag-autocomplete>
       </form>
     </template>
 
