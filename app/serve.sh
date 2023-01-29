@@ -1,1 +1,1 @@
-npm run prod
+exec npm run prod
