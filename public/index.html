@@ -194,7 +194,7 @@
         </div>
 
         <!-- dupe error message -->
-        <p class="error" v-if="isDupe">
+        <p class="error" v-if="isDupe && !bookmark">
           This URL is already bookmarked.
           <button @click="onClickOfViewDupe" class="pure-button" type="button">
             View it
