@@ -124,6 +124,10 @@ Vue.component('b-dashboard', {
         )
       );
 
+      // dedupe the results
+      const uniqueResultIds = [...new Set(results.map((bm) => bm.id))];
+      results = uniqueResultIds.map((id) => results.find((bm) => bm.id === id));
+
       // if the only search terms are hash tags, return all the bookmarks that
       // match those tags
       if (!this.searchQueryMinusTags.trim()) {
