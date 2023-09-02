@@ -13,6 +13,7 @@ import {
 import {
   clamp,
   dateDisplay,
+  debounce,
   fetcher,
   getArchiveUrl,
   getTagsSortedByCount,
@@ -646,24 +647,9 @@ Vue.component('b-tag-autocomplete', {
   data: () => ({
     limit: 5,
     selectedTag: 0,
-    showTagSuggestions: false
+    showTagSuggestions: false,
+    tagSuggestions: []
   }),
-
-  computed: {
-    tagSuggestions() {
-      const terms = this.text.split(' ').filter((_) => _);
-
-      if (!terms.length) {
-        return [];
-      }
-
-      const term = terms.at(-1);
-
-      return getTagsSortedByCount()
-        .filter((tag) => tag.name.startsWith(term))
-        .slice(0, this.limit);
-    }
-  },
 
   watch: {
     tagSuggestions(suggestions) {
@@ -673,9 +659,27 @@ Vue.component('b-tag-autocomplete', {
     },
 
     text(val) {
-      if (val.endsWith(' ')) {
+      if (!val || val.endsWith(' ')) {
         this.showTagSuggestions = false;
+        return;
       }
+
+      // generate tag suggestions, debounced
+      const setTagSuggstions = debounce(() => {
+        const terms = this.text.split(' ').filter((_) => _);
+
+        if (!terms.length) {
+          return [];
+        }
+
+        const term = terms.at(-1);
+
+        this.tagSuggestions = getTagsSortedByCount()
+          .filter((tag) => tag.name.startsWith(term))
+          .slice(0, this.limit);
+      }, 500);
+
+      setTagSuggstions();
     }
   },
 
