@@ -63,6 +63,10 @@ const tagAutocompleteMixin = {
   }),
 
   methods: {
+    onTagInputBlur() {
+      this.tagAutocomplete.showTagSuggestions = false;
+    },
+
     onTagKeyDown(event) {
       if (event.code === 'ArrowDown') {
         event.preventDefault();

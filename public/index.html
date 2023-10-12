@@ -115,7 +115,10 @@
               <a :href="bookmark.url" class="url muted">{{ bookmark.url }}</a>
             </p>
 
-            <div class="description mb-sm">{{ bookmark.description }}</div>
+            <div
+              class="description mb-sm"
+              v-html="bookmark.description.replaceAll('\n', '<br>')"
+            ></div>
 
             <ul class="tags m-none mt-md mb-sm">
               <li class="mr-sm mt-none mb-none" v-for="tag in bookmark.tags">
@@ -177,6 +180,7 @@
               v-model="description"
             ></textarea>
             <input
+              @blur="onTagInputBlur"
               @keydown="onTagKeyDown"
               class="pure-input-1"
               ref="tagInput"
