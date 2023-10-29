@@ -1,6 +1,6 @@
 import { computed, ref } from '../lib/vue.esm-browser.js';
 import { deleteBookmark, selectTag } from '../store.js';
-import { getArchiveUrl } from '../utils.js';
+import { dateDisplay, getArchiveUrl } from '../utils.js';
 
 /**
  * @typedef {Object} Props
@@ -27,8 +27,8 @@ export default {
     /* -- COMPUTED -- */
 
     const archiveUrl = computed(() => getArchiveUrl(props.bookmark.id));
-    const createdDate = computed(() => new Date(props.bookmark.created));
-    const updatedDate = computed(() => new Date(props.bookmark.updated));
+    const createdDate = computed(() => dateDisplay(props.bookmark.created));
+    const updatedDate = computed(() => dateDisplay(props.bookmark.updated));
 
     /* -- METHODS -- */
 
