@@ -86,6 +86,10 @@ export const getTagCount = (tag, resultsOnly = false) => {
   return count;
 };
 
+/**
+ * @param {boolean} resultsOnly
+ * @returns {Types.TagWithCount[]}
+ */
 export const getTagsSortedByCount = (resultsOnly = false) => {
   const tags = [];
 
@@ -130,5 +134,37 @@ export const MONTHS = [
   'Nov',
   'Dec'
 ];
+
+/* -- Composables -- */
+
+export const useTagAutocompleteKeyBindings = (tagAutocomplete) => {
+  return {
+    onTagInputBlur() {
+      tagAutocomplete.value.showTagSuggestions = false;
+    },
+
+    onTagKeyDown(event) {
+      if (event.code === 'ArrowDown') {
+        event.preventDefault();
+        tagAutocomplete.value.incrementSelectedTag();
+      }
+
+      if (event.code === 'ArrowUp') {
+        event.preventDefault();
+        tagAutocomplete.value.decrementSelectedTag();
+      }
+
+      if (event.code === 'Enter') {
+        event.preventDefault();
+        tagAutocomplete.value.onClickOfSuggestion();
+      }
+
+      if (event.code === 'Escape') {
+        event.preventDefault();
+        tagAutocomplete.value.showTagSuggestions = false;
+      }
+    }
+  };
+};
 
 export * from './idHelpers.js';

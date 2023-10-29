@@ -1,7 +1,8 @@
+import { reactive } from './lib/vue.esm-browser.js';
 import { assignRandomId, fetcher } from './utils.js';
 
 // non-persistent store for view state
-export const state = Vue.observable({
+export const state = reactive({
   currentBookmarkIds: [],
   currentBookmarks: [],
   searchQuery: '',
@@ -19,7 +20,7 @@ export const deselectTag = (tag) => {
 };
 
 // persistent store that gets saved
-export const store = Vue.observable({
+export const store = reactive({
   bookmarks: [],
   tags: [], // [string]
   bookmarksToTags: [], // [bookmarkId, tagName]
@@ -55,7 +56,7 @@ export const saveBookmark = (bookmark) => {
         updated: Date.now()
       };
 
-      Vue.set(store.bookmarks, bookmarkIndex, updatedBookmark);
+      store.bookmarks[bookmarkIndex] = updatedBookmark;
       handleBookmarkTags(updatedBookmark);
 
       return write();
