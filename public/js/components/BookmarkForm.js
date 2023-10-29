@@ -1,9 +1,6 @@
-import { computed, ref, watch } from '../lib/vue.esm-browser.js';
+import { computed, provide, ref, watch } from '../lib/vue.esm-browser.js';
 import { saveBookmark, state, store } from '../store.js';
-import {
-  removeTrailingSlash,
-  useTagAutocompleteKeyBindings
-} from '../utils.js';
+import { removeTrailingSlash, useTagAutocomplete } from '../utils.js';
 
 /**
  * @typedef {Object} UrlData
@@ -91,13 +88,13 @@ export default {
 
     watch(
       () => props.selectedTags,
-      (/** @type {string[]} */ selectedTags) => {
-        if (!tags) {
+      (/** @type {string[]} */ selectedTagsVal) => {
+        if (!selectedTagsVal) {
           return;
         }
 
-        if (selectedTags.length) {
-          tags.value = selectedTags.join(' ');
+        if (selectedTagsVal.length) {
+          tags.value = selectedTagsVal.join(' ');
           return;
         }
 
@@ -175,8 +172,19 @@ export default {
       emit('bookmark-saved');
     };
 
-    const { onTagInputBlur, onTagKeyDown } =
-      useTagAutocompleteKeyBindings(tagAutocomplete);
+    const {
+      selectedTag,
+      showTagSuggestions,
+      onTagInputBlur,
+      onTagKeyDown,
+      registerTagKeyDownCallback
+    } = useTagAutocomplete();
+
+    provide('autocomplete', {
+      selectedTag,
+      showTagSuggestions,
+      registerTagKeyDownCallback
+    });
 
     return {
       onTagInputBlur,
@@ -232,7 +240,6 @@ export default {
         <b-tag-autocomplete
           :text="tags"
           @autocomplete="onTagAutocomplete"
-          ref="tagAutocomplete"
         ></b-tag-autocomplete>
       </div>
 

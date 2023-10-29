@@ -1,4 +1,7 @@
+import { ref } from './lib/vue.esm-browser.js';
 import { state, store } from './store.js';
+
+export * from './idHelpers.js';
 
 export const clamp = (value, min, max) => {
   return Math.min(max, Math.max(min, value));
@@ -135,36 +138,50 @@ export const MONTHS = [
   'Dec'
 ];
 
-/* -- Composables -- */
+/* -- Composable for tag autocomplete interaction -- */
 
-export const useTagAutocompleteKeyBindings = (tagAutocomplete) => {
-  return {
-    onTagInputBlur() {
-      tagAutocomplete.value.showTagSuggestions = false;
-    },
+/**
+ * @typedef {Object} TagAutocompleteComposables
+ * @property {Vue.Ref<number>} selectedTag
+ * @property {Vue.Ref<boolean>} showTagSuggestions
+ * @property {(callback: (event: KeyboardEvent) => void) => void} registerTagKeyDownCallback
+ * @property {() => void} onTagInputBlur
+ * @property {(event: KeyboardEvent) => void} onTagKeyDown
+ */
 
-    onTagKeyDown(event) {
-      if (event.code === 'ArrowDown') {
-        event.preventDefault();
-        tagAutocomplete.value.incrementSelectedTag();
-      }
+/**
+ * @returns {TagAutocompleteComposables}
+ */
+export const useTagAutocomplete = () => {
+  /** @type {Vue.Ref<number>} */
+  const selectedTag = ref(0);
+  /** @type {Vue.Ref<boolean>} */
+  const showTagSuggestions = ref(false);
 
-      if (event.code === 'ArrowUp') {
-        event.preventDefault();
-        tagAutocomplete.value.decrementSelectedTag();
-      }
+  /** @type {(event: KeyboardEvent) => void | null} */
+  let tagKeyDownCallback = null;
 
-      if (event.code === 'Enter') {
-        event.preventDefault();
-        tagAutocomplete.value.onClickOfSuggestion();
-      }
+  /** @param {(event: KeyboardEvent) => void} callback */
+  const registerTagKeyDownCallback = (callback) => {
+    tagKeyDownCallback = callback;
+  };
 
-      if (event.code === 'Escape') {
-        event.preventDefault();
-        tagAutocomplete.value.showTagSuggestions = false;
-      }
+  const onTagInputBlur = () => {
+    showTagSuggestions.value = false;
+  };
+
+  /** @param {KeyboardEvent} event */
+  const onTagKeyDown = (event) => {
+    if (tagKeyDownCallback !== null) {
+      tagKeyDownCallback(event);
     }
   };
-};
 
-export * from './idHelpers.js';
+  return {
+    selectedTag,
+    showTagSuggestions,
+    registerTagKeyDownCallback,
+    onTagInputBlur,
+    onTagKeyDown
+  };
+};

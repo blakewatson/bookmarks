@@ -1,9 +1,13 @@
-import { ref, watch } from '../lib/vue.esm-browser.js';
+import { inject, ref, watch } from '../lib/vue.esm-browser.js';
 import { debounce, getTagsSortedByCount } from '../utils.js';
 
 /**
  * @typedef {Object} Props
  * @property {string} text
+ */
+
+/**
+ * @typedef {import('../utils.js').TagAutocompleteComposables} TagAutocompleteComposables
  */
 
 /** @type {Vue.ComponentOptions} */
@@ -18,12 +22,13 @@ export default {
   setup(props, { emit }) {
     /** @type {Vue.Ref<number>} */
     const limit = ref(5);
-    /** @type {Vue.Ref<number>} */
-    const selectedTag = ref(0);
-    /** @type {Vue.Ref<boolean>} */
-    const showTagSuggestions = ref(false);
+
     /** @type {Vue.Ref<Types.TagWithCount[]>} */
     const tagSuggestions = ref([]);
+
+    /** @type {TagAutocompleteComposables} */
+    const { selectedTag, showTagSuggestions, registerTagKeyDownCallback } =
+      inject('autocomplete');
 
     /* -- WATCHERS -- */
 
@@ -70,6 +75,29 @@ export default {
       selectedTag.value = (selectedTag.value + 1) % limit.value;
     };
 
+    // handle keydown events
+    registerTagKeyDownCallback((event) => {
+      if (event.code === 'ArrowDown') {
+        event.preventDefault();
+        incrementSelectedTag();
+      }
+
+      if (event.code === 'ArrowUp') {
+        event.preventDefault();
+        decrementSelectedTag();
+      }
+
+      if (event.code === 'Enter') {
+        event.preventDefault();
+        onClickOfSuggestion();
+      }
+
+      if (event.code === 'Escape') {
+        event.preventDefault();
+        showTagSuggestions.value = false;
+      }
+    });
+
     /**
      *
      * @param {Types.TagWithCount} tag
@@ -82,6 +110,7 @@ export default {
       }
 
       selectedTag.value = 0;
+      showTagSuggestions.value = false;
       emit('autocomplete', tag.name);
     };
 

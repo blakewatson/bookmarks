@@ -1,6 +1,6 @@
-import { computed, ref, watch } from '../lib/vue.esm-browser.js';
+import { computed, provide, ref, watch } from '../lib/vue.esm-browser.js';
 import { deselectTag, selectTag, state } from '../store.js';
-import { useTagAutocompleteKeyBindings } from '../utils.js';
+import { useTagAutocomplete } from '../utils.js';
 
 /**
  * @typedef {Object} Props
@@ -46,11 +46,6 @@ export default {
     );
 
     /* -- METHODS -- */
-
-    const tagAutocompleteSearch = ref(null);
-    const { onTagKeyDown, onTagInputBlur } = useTagAutocompleteKeyBindings(
-      tagAutocompleteSearch
-    );
 
     const clearSearch = () => {
       search.value = '';
@@ -106,11 +101,24 @@ export default {
       });
     };
 
+    const {
+      selectedTag,
+      showTagSuggestions,
+      onTagInputBlur,
+      onTagKeyDown,
+      registerTagKeyDownCallback
+    } = useTagAutocomplete();
+
+    provide('autocomplete', {
+      selectedTag,
+      showTagSuggestions,
+      registerTagKeyDownCallback
+    });
+
     return {
       search,
       tags,
       computedTagsText,
-      tagAutocompleteSearch,
       clearSearch,
       onSearchKeyDown,
       onSubmit,
@@ -143,7 +151,6 @@ export default {
         :text="computedTagsText"
         @autocomplete="onTagAutocomplete"
         class="tag-autocomplete-search"
-        ref="tagAutocompleteSearch"
       ></b-tag-autocomplete>
     </form>
   `
