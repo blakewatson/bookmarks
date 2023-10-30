@@ -1,6 +1,6 @@
 import { computed, onBeforeMount, ref, watch } from '../lib/vue.esm-browser.js';
 import { search } from '../search.js';
-import { state, store } from '../store.js';
+import { deselectTag, state, store } from '../store.js';
 
 const ViewType = {
   home: 'home'
@@ -20,6 +20,9 @@ export default {
 
     /* -- COMPUTED -- */
 
+    const selectedTags = computed(() => [...state.selectedTags]);
+    const searchQuery = computed(() => state.searchQuery);
+
     const bookmarks = computed(() => {
       if (!selectedTags.value.length && !searchQueryMinusTags.value) {
         return store.bookmarks;
@@ -36,16 +39,18 @@ export default {
         results = [...bookmarksWithTag];
       }
 
-      if (searchQueryMinusTags.value) {
+      if (searchQueryMinusTags.value?.trim()) {
         results = search(results);
       }
 
       // lunr chokes on urls so we'll do our own search
-      results = results.concat(
-        store.bookmarks.filter((bm) =>
-          bm.url.includes(searchQueryMinusTags.value)
-        )
-      );
+      if (searchQueryMinusTags.value?.trim()) {
+        results = results.concat(
+          store.bookmarks.filter((bm) =>
+            bm.url.includes(searchQueryMinusTags.value)
+          )
+        );
+      }
 
       // dedupe the results
       const uniqueResultIds = [...new Set(results.map((bm) => bm.id))];
@@ -60,9 +65,6 @@ export default {
       return results;
     });
 
-    const searchQuery = computed(() => state.searchQuery);
-    const selectedTags = computed(() => [...state.selectedTags]);
-
     const searchQueryMinusTags = computed(() =>
       state.searchQuery
         .split(' ')
@@ -75,7 +77,7 @@ export default {
 
     watch(bookmarks, (/** @type {Types.Bookmark[]} */ bookmarks) => {
       state.currentBookmarks = bookmarks;
-      state.currentBookmarkIds = bookmarks.map((bm) => bm.id);
+      state.currentBookmarkIds = new Set(bookmarks.map((bm) => bm.id));
     });
 
     /* -- METHODS -- */
@@ -83,10 +85,6 @@ export default {
     const closeBookmarkForm = () => {
       showAddForm.value = false;
       urlFormData.value = null;
-    };
-
-    const deselectTag = (tag) => {
-      deselectTag(tag);
     };
 
     const onToggleOfAddForm = (event) => {

@@ -52,9 +52,12 @@ export default {
 
     /* -- WATCHERS -- */
 
-    watch(props.bookmarks, () => {
-      page.value = 1;
-    });
+    watch(
+      () => props.bookmarks,
+      () => {
+        page.value = 1;
+      }
+    );
 
     return {
       dateDisplay,

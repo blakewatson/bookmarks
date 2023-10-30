@@ -79,7 +79,7 @@ export const getTagCount = (tag, resultsOnly = false) => {
       continue;
     }
 
-    if (resultsOnly && !state.currentBookmarkIds.includes(bt[0])) {
+    if (resultsOnly && !state.currentBookmarkIds.has(bt[0])) {
       continue;
     }
 
@@ -95,7 +95,7 @@ export const getTagCount = (tag, resultsOnly = false) => {
  */
 export const getTagsSortedByCount = (resultsOnly = false) => {
   const tags = [];
-
+  console.time();
   for (const tag of store.tags) {
     let count = getTagCount(tag, resultsOnly);
 
@@ -110,7 +110,7 @@ export const getTagsSortedByCount = (resultsOnly = false) => {
   }
 
   tags.sort((a, b) => b.count - a.count);
-
+  console.timeEnd();
   return tags;
 };
 

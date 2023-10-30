@@ -3,7 +3,7 @@ import { assignRandomId, fetcher } from './utils.js';
 
 // non-persistent store for view state
 export const state = reactive({
-  currentBookmarkIds: [],
+  currentBookmarkIds: new Set([]),
   currentBookmarks: [],
   searchQuery: '',
   selectedTags: []
