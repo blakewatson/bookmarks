@@ -1,12 +1,29 @@
 import { reactive } from './lib/vue.esm-browser.js';
-import { assignRandomId, fetcher } from './utils.js';
+import {
+  assignRandomId,
+  fetcher,
+  getTagCount,
+  tagCountCacheClear
+} from './utils.js';
 
 // non-persistent store for view state
+/** @type {Types.State} */
 export const state = reactive({
   currentBookmarkIds: new Set([]),
   currentBookmarks: [],
   searchQuery: '',
-  selectedTags: []
+  selectedTags: [],
+  // base tag counts, competed on app startup
+  tagCounts: []
+});
+
+// persistent store that gets saved
+/** @type {Types.Store} */
+export const store = reactive({
+  bookmarks: [],
+  tags: [], // [string]
+  bookmarksToTags: [], // [bookmarkId, tagName]
+  archives: []
 });
 
 export const selectTag = (tag) => {
@@ -19,13 +36,13 @@ export const deselectTag = (tag) => {
   state.selectedTags = state.selectedTags.filter((t) => t !== tag);
 };
 
-// persistent store that gets saved
-export const store = reactive({
-  bookmarks: [],
-  tags: [], // [string]
-  bookmarksToTags: [], // [bookmarkId, tagName]
-  archives: []
-});
+// initializes the base tag counts (ie, no selected tags)
+export const initTagCounts = () => {
+  state.tagCounts = store.tags.map((t) => {
+    return [t, getTagCount(t)];
+  });
+  state.tagCounts.sort((a, b) => b[1] - a[1]);
+};
 
 export const deleteBookmark = (bookmark) => {
   if (!bookmark.id) {
@@ -35,6 +52,7 @@ export const deleteBookmark = (bookmark) => {
 
   store.bookmarks = store.bookmarks.filter((bm) => bm.id !== bookmark.id);
   removeBookmarkFromAllTags(bookmark.id);
+  tagCountCacheClear();
   return write();
 };
 
@@ -117,6 +135,8 @@ export const handleBookmarkTags = (bookmark) => {
     // add the correct tags back
     .concat(tagsOnBookmark.map((tagName) => [bookmark.id, tagName]));
 
+  tagCountCacheClear();
+
   // update the tags array
   setTagsArray();
 };
@@ -166,7 +186,7 @@ export const setTagsArray = () => {
 };
 
 export const deleteTag = (tagName) => {
-  store.tags = store.tags.filter((t) => t.name !== tagName);
+  store.tags = store.tags.filter((t) => t !== tagName);
   store.bookmarksToTags = store.bookmarksToTags.filter(
     (bt) => bt[1] !== tagName
   );

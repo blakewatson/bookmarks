@@ -9,7 +9,7 @@ import TagAutocomplete from './components/TagAutocomplete.js';
 import Tags from './components/Tags.js';
 import { createApp, ref, watch } from './lib/vue.esm-browser.js';
 import { createLunrIndex } from './search.js';
-import { getArchives, read, readLocal } from './store.js';
+import { getArchives, initTagCounts, read, readLocal } from './store.js';
 
 const bookmarksApp = {
   setup() {
@@ -28,12 +28,15 @@ const bookmarksApp = {
 
         if (readLocal()) {
           loaded.value = true;
+          initTagCounts();
         }
 
         try {
           await read();
           hasToken.value = true;
           loaded.value = true;
+
+          initTagCounts();
 
           await getArchives();
 

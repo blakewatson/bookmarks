@@ -71,6 +71,23 @@ export const getArchiveUrl = (bookmarkId) => {
   );
 };
 
+export const tagCountCacheGet = (ids) => {
+  return sessionStorage.getItem(ids.join(','));
+};
+
+export const tagCountCacheSet = (ids, tags) => {
+  return new Promise((resolve, reject) => {
+    const key = ids.join(',');
+    const val = JSON.stringify(tags);
+    sessionStorage.setItem(key, val);
+    resolve();
+  });
+};
+
+export const tagCountCacheClear = () => {
+  sessionStorage.clear();
+};
+
 export const getTagCount = (tag, resultsOnly = false) => {
   let count = 0;
 
@@ -95,8 +112,32 @@ export const getTagCount = (tag, resultsOnly = false) => {
  */
 export const getTagsSortedByCount = (resultsOnly = false) => {
   const tags = [];
-  console.time();
-  for (const tag of store.tags) {
+
+  // if no selected tags, use precomputed tag counts
+  if (!state.selectedTags.length) {
+    return state.tagCounts.map(([tag, count]) => ({
+      name: tag,
+      count
+    }));
+  }
+
+  // if there is a cached tag count for this set of bookmark, use it
+  const cache = tagCountCacheGet(Array.from(state.currentBookmarkIds));
+
+  if (cache) {
+    return JSON.parse(cache);
+  }
+
+  let tagsToCount = resultsOnly ? [] : [...store.tags];
+
+  // if we're only counting results, use only the tags found in the current bookmarks
+  if (resultsOnly) {
+    tagsToCount = Array.from(
+      new Set(state.currentBookmarks.map((bm) => bm.tags).flat())
+    );
+  }
+
+  for (const tag of tagsToCount) {
     let count = getTagCount(tag, resultsOnly);
 
     if (!count) {
@@ -110,7 +151,11 @@ export const getTagsSortedByCount = (resultsOnly = false) => {
   }
 
   tags.sort((a, b) => b.count - a.count);
-  console.timeEnd();
+
+  if (resultsOnly) {
+    tagCountCacheSet(Array.from(state.currentBookmarkIds), tags);
+  }
+
   return tags;
 };
 
