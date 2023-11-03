@@ -106,6 +106,11 @@ export default {
     watch(
       () => url.value,
       (/** @type {string} */ url) => {
+        // don't check for dupe if this is an edit form
+        if (props.bookmark) {
+          return;
+        }
+
         // check if this bookmark exists (ignore trailing slashes)
         const dupe = store.bookmarks.find(
           (bm) => removeTrailingSlash(bm.url) === removeTrailingSlash(url)
