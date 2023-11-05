@@ -53,6 +53,7 @@ export const deleteBookmark = (bookmark) => {
   store.bookmarks = store.bookmarks.filter((bm) => bm.id !== bookmark.id);
   removeBookmarkFromAllTags(bookmark.id);
   tagCountCacheClear();
+  writeLocal();
   return write();
 };
 
@@ -76,7 +77,7 @@ export const saveBookmark = (bookmark) => {
 
       store.bookmarks[bookmarkIndex] = updatedBookmark;
       handleBookmarkTags(updatedBookmark);
-
+      writeLocal();
       return write();
     }
 
@@ -111,6 +112,8 @@ export const saveBookmark = (bookmark) => {
       console.log('error in write catch');
       console.error(err);
     });
+
+  writeLocal();
 
   return writePromise;
 };
