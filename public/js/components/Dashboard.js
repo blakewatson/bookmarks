@@ -146,7 +146,7 @@ export default {
         </summary>
 
         <b-bookmark-form
-          :form-data="urlFormData"
+          :url-data="urlFormData"
           :selected-tags="selectedTags"
           @bookmark-saved="closeBookmarkForm"
           @cancel="closeBookmarkForm"
