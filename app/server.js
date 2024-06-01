@@ -69,28 +69,36 @@ app.post('/api/archive-url', async (req, res) => {
   // get the archives
   const archives = JSON.parse(fs.readFileSync(`${dataDir}/archives.json`));
 
-  if (archives.findIndex((a) => a.bookmark_id === bookmarkId) > -1) {
+  try {
+    const result = await archiveUrl(url);
+
+    if (!result) {
+      console.log('No result');
+      return;
+    }
+
+    result.bookmark_id = bookmarkId;
+
+    const existingArchiveIdx = archives.findIndex(
+      (a) => a.bookmark_id === bookmarkId
+    );
+
+    if (existingArchiveIdx > -1) {
+      archives[existingArchiveIdx] = result;
+    } else {
+      archives.push(result);
+    }
+
     res
-      .status(400)
-      .json({ success: false, error: 'Bookmark already archived.' });
+      .status(200)
+      .json({ success: true, message: 'Archived bookmark.', result });
+
+    const data = JSON.stringify(archives);
+    fs.writeFileSync(`${dataDir}/archives.json`, data);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error });
   }
-
-  res
-    .status(200)
-    .json({ success: true, message: 'Processing archive request.' });
-
-  const result = await archiveUrl(url);
-
-  if (!result) {
-    console.log('No result');
-    return;
-  }
-
-  result.bookmark_id = bookmarkId;
-  archives.push(result);
-
-  const data = JSON.stringify(archives);
-  fs.writeFileSync(`${dataDir}/archives.json`, data);
 });
 
 app.get('/ping', (req, res) => {

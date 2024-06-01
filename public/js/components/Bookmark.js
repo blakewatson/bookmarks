@@ -1,5 +1,5 @@
 import { computed, ref } from '../lib/vue.esm-browser.js';
-import { deleteBookmark, selectTag } from '../store.js';
+import { archiveBookmark, deleteBookmark, selectTag } from '../store.js';
 import { dateDisplay, getArchiveUrl } from '../utils.js';
 
 /**
@@ -10,6 +10,9 @@ import { dateDisplay, getArchiveUrl } from '../utils.js';
 /** @type {Vue.ComponentOptions} */
 export default {
   props: {
+    // https://github.com/vuejs/vetur/issues/1337#issuecomment-667482279
+    // not really necessary since we're typing the props param of the setup function
+    /** @type {Vue.PropType<Types.Bookmark>} */
     bookmark: Object
   },
 
@@ -17,20 +20,13 @@ export default {
    * @param {Props} props
    */
   setup(props) {
-    /* -- DATA -- */
-
     /** @type {Vue.Ref<boolean>} */
     const areYouSure = ref(false);
     /** @type {Vue.Ref<boolean>} */
     const isEditing = ref(false);
 
-    /* -- COMPUTED -- */
-
-    const archiveUrl = computed(() => getArchiveUrl(props.bookmark.id));
     const createdDate = computed(() => dateDisplay(props.bookmark.created));
     const updatedDate = computed(() => dateDisplay(props.bookmark.updated));
-
-    /* -- METHODS -- */
 
     const nah = () => {
       areYouSure.value = false;
@@ -57,15 +53,49 @@ export default {
       selectTag(tag);
     };
 
+    // Archives
+
+    /** @type {Vue.Ref<boolean>} */
+    let isArchiving = ref(false);
+
+    /** @type {Vue.Ref<string>} */
+    const archiveUrl = ref(getArchiveUrl(props.bookmark.id));
+
+    // refresh the archive url on global 'archives-updated' event
+    document.addEventListener('archives-updated', () => {
+      archiveUrl.value = getArchiveUrl(props.bookmark.id);
+    });
+
+    const onClickOfRecache = async () => {
+      if (isArchiving.value) {
+        return;
+      }
+
+      try {
+        isArchiving.value = true;
+        const isArchived = await archiveBookmark(props.bookmark);
+        isArchiving.value = false;
+        if (!isArchived) {
+          return;
+        }
+        archiveUrl.value = getArchiveUrl(props.bookmark.id);
+      } catch (error) {
+        isArchiving.value = false;
+        console.error(error);
+      }
+    };
+
     return {
       areYouSure,
       archiveUrl,
       createdDate,
+      isArchiving,
       isEditing,
       nah,
       onCancel,
       onClickOfDelete,
       onClickOfEdit,
+      onClickOfRecache,
       onClickOfTag,
       updatedDate
     };
@@ -112,6 +142,10 @@ export default {
               <a :href="archiveUrl" class="mr-sm" v-if="archiveUrl">cached</a>
 
               <a @click.prevent="onClickOfEdit" class="mr-sm" href="#">edit</a>
+
+              <a @click.prevent="onClickOfRecache" class="mr-sm" href="#"
+                >{{ isArchiving ? 'archiving...' : 're-cache' }}</a
+              >
 
               <a
                 @click.prevent="onClickOfDelete"

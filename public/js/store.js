@@ -144,27 +144,52 @@ export const handleBookmarkTags = (bookmark) => {
   setTagsArray();
 };
 
-export const archiveBookmark = (bookmark) => {
+/** @param {Types.Bookmark} bookmark */
+export const archiveBookmark = async (bookmark) => {
   if (!bookmark.id || !bookmark.url) {
     console.error('Must provide a bookmark with an id and url.');
     return;
   }
 
-  const resp = fetcher('/api/archive-url', {
-    method: 'POST',
-    body: JSON.stringify({ bookmarkId: bookmark.id, url: bookmark.url })
-  });
+  try {
+    const resp = await fetcher('/api/archive-url', {
+      method: 'POST',
+      body: JSON.stringify({ bookmarkId: bookmark.id, url: bookmark.url })
+    });
 
-  // resp
-  //   .then((r) => r.json())
-  //   .then((r) => {
-  //     if (r.error) {
-  //       console.error(r.error);
-  //     }
-  //   })
-  //   .catch((err) => console.error('caught', err));
+    // resp
+    //   .then((r) => r.json())
+    //   .then((r) => {
+    //     if (r.error) {
+    //       console.error(r.error);
+    //     }
+    //   })
+    //   .catch((err) => console.error('caught', err));
 
-  return resp;
+    const data = await resp.json();
+
+    if (data.error) {
+      console.error(data.error);
+      return false;
+    }
+
+    if (data.result) {
+      const existingArchiveIdx = store.archives.findIndex(
+        (a) => a.bookmark_id === bookmark.id
+      );
+
+      if (existingArchiveIdx > -1) {
+        store.archives[existingArchiveIdx] = data.result;
+      } else {
+        store.archives.push(data.result);
+      }
+    }
+
+    return true;
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
 };
 
 export const removeBookmarkFromAllTags = (bookmarkId) => {
@@ -263,6 +288,10 @@ export const getArchives = () => {
     .then((resp) => resp.json())
     .then((data) => {
       store.archives = data;
+      writeLocal();
+      // dispatch custom event to alert that archives have been updated
+      const event = new CustomEvent('archives-updated');
+      document.dispatchEvent(event);
     })
     .catch((err) => console.error(err));
 };
