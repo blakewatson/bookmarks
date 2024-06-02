@@ -5,8 +5,10 @@ import { getTagsSortedByCount } from '../utils.js';
 /** @type {Vue.ComponentOptions} */
 export default {
   setup() {
+    const TOP_TAGS_COUNT = 40;
+
     /** @type {Vue.Ref<number>} */
-    const limit = ref(20);
+    const limit = ref(TOP_TAGS_COUNT);
     /** @type {Vue.Ref<boolean>} */
     const showAll = ref(false);
 
@@ -24,7 +26,7 @@ export default {
         return;
       }
 
-      limit.value = 20;
+      limit.value = TOP_TAGS_COUNT;
     };
 
     /** @param {string} tag */
