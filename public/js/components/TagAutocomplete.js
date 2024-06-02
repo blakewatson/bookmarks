@@ -16,6 +16,8 @@ export default {
     text: String
   },
 
+  emits: ['autocomplete'],
+
   /**
    * @param {Props} props
    */
@@ -114,6 +116,11 @@ export default {
       emit('autocomplete', tag.name);
     };
 
+    // external clicks should close the menu
+    window.addEventListener('click', () => {
+      showTagSuggestions.value = false;
+    });
+
     return {
       limit,
       selectedTag,
@@ -136,7 +143,7 @@ export default {
         v-for="(tag, i) in tagSuggestions"
       >
         <a
-          @click.prevent="onClickOfSuggestion(tag)"
+          @click.prevent.stop="onClickOfSuggestion(tag)"
           href="#"
           class="pure-menu-link"
           >{{ tag.name }} ({{tag.count}})</a

@@ -60,6 +60,11 @@ export default {
     const onSearchKeyDown = (event) => {
       const terms = search.value.split(' ');
 
+      // if enter key, abort
+      if (event.key === 'Enter') {
+        return true;
+      }
+
       // if the latest search term isn't a hashtag, abort
       if (!terms.at(-1).startsWith('#')) {
         return;
@@ -104,7 +109,6 @@ export default {
     const {
       selectedTag,
       showTagSuggestions,
-      onTagInputBlur,
       onTagKeyDown,
       registerTagKeyDownCallback
     } = useTagAutocomplete();
@@ -122,8 +126,7 @@ export default {
       clearSearch,
       onSearchKeyDown,
       onSubmit,
-      onTagAutocomplete,
-      onTagInputBlur
+      onTagAutocomplete
     };
   },
 
@@ -134,7 +137,6 @@ export default {
       style="position: relative"
     >
       <input
-        @blur="onTagInputBlur"
         @keydown="onSearchKeyDown"
         autofocus
         class="pure-input-1 search-input mr-sm"

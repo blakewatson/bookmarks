@@ -180,7 +180,6 @@ export default {
     const {
       selectedTag,
       showTagSuggestions,
-      onTagInputBlur,
       onTagKeyDown,
       registerTagKeyDownCallback
     } = useTagAutocomplete();
@@ -192,7 +191,6 @@ export default {
     });
 
     return {
-      onTagInputBlur,
       onTagKeyDown,
       title,
       url,
@@ -232,7 +230,6 @@ export default {
             v-model="description"
           ></textarea>
           <input
-            @blur="onTagInputBlur"
             @keydown="onTagKeyDown"
             class="pure-input-1"
             ref="tagInput"

@@ -190,7 +190,6 @@ export const MONTHS = [
  * @property {Vue.Ref<number>} selectedTag
  * @property {Vue.Ref<boolean>} showTagSuggestions
  * @property {(callback: (event: KeyboardEvent) => void) => void} registerTagKeyDownCallback
- * @property {() => void} onTagInputBlur
  * @property {(event: KeyboardEvent) => void} onTagKeyDown
  */
 
@@ -211,10 +210,6 @@ export const useTagAutocomplete = () => {
     tagKeyDownCallback = callback;
   };
 
-  const onTagInputBlur = () => {
-    showTagSuggestions.value = false;
-  };
-
   /** @param {KeyboardEvent} event */
   const onTagKeyDown = (event) => {
     if (tagKeyDownCallback !== null) {
@@ -226,7 +221,6 @@ export const useTagAutocomplete = () => {
     selectedTag,
     showTagSuggestions,
     registerTagKeyDownCallback,
-    onTagInputBlur,
     onTagKeyDown
   };
 };
