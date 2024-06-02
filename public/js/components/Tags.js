@@ -15,8 +15,6 @@ export default {
       return getTagsSortedByCount(resultsOnly).slice(0, limit.value);
     });
 
-    /* -- METHODS -- */
-
     /** @param {string} tag */
     const isTagSelected = (tag) => state.selectedTags.includes(tag);
 

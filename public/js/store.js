@@ -220,25 +220,22 @@ export const deleteTag = (tagName) => {
   );
 };
 
-export const read = () => {
-  const resp = fetcher('/api/bookmarks');
+export const read = async () => {
+  try {
+    const resp = await fetcher('/api/bookmarks');
+    const data = await resp.json();
 
-  resp
-    .then((resp) => {
-      return resp.json();
-    })
-    .then((data) => {
-      store.bookmarks = data.bookmarks;
-      store.tags = data.tags;
-      store.bookmarksToTags = data.bookmarksToTags;
+    store.bookmarks = data.bookmarks;
+    store.tags = data.tags;
+    store.bookmarksToTags = data.bookmarksToTags;
 
-      writeLocal();
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+    writeLocal();
 
-  return resp;
+    return data;
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
 };
 
 export const write = () => {

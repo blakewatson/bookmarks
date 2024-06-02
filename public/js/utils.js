@@ -113,6 +113,10 @@ export const getTagCount = (tag, resultsOnly = false) => {
 export const getTagsSortedByCount = (resultsOnly = false) => {
   const tags = [];
 
+  if (!store.tags.length) {
+    return [];
+  }
+
   // if no selected tags, use precomputed tag counts
   if (!state.selectedTags.length) {
     return state.tagCounts.map(([tag, count]) => ({

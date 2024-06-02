@@ -37,10 +37,9 @@ const bookmarksApp = {
           loaded.value = true;
 
           initTagCounts();
+          createLunrIndex();
 
           await getArchives();
-
-          createLunrIndex();
         } catch (err) {
           console.error(err);
           hasToken.value = false;
