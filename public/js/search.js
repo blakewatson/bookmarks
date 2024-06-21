@@ -1,3 +1,4 @@
+import MiniSearch from './lib/minisearch.esm.min.js';
 import { state, store } from './store.js';
 import { debounce } from './utils.js';
 
@@ -39,11 +40,15 @@ export const search = (bookmarks = []) => {
 
   // search the index
   try {
-    const matches = searchIndex.search(terms);
+    const matches = searchIndex.search(terms, {
+      boost: { title: 2 },
+      fuzzy: 0.2,
+      prefix: true
+    });
 
     // get the bookmarks corresponding to the matches
     results = matches
-      .map((match) => list.find((item) => item.id === match.ref))
+      .map((match) => list.find((item) => item.id === match.id))
       .filter((_) => _);
   } catch (err) {
     console.error(err);
@@ -53,18 +58,12 @@ export const search = (bookmarks = []) => {
   return results;
 };
 
-export const createLunrIndex = () => {
-  searchIndex = window.lunr(function () {
-    this.ref('id');
-    this.field('title', { boost: 2 });
-    this.field('url');
-    this.field('description');
-    this.field('tags');
-
-    store.bookmarks.forEach((bm) => {
-      this.add(bm);
-    }, this);
+export const createSearchIndex = () => {
+  searchIndex = new MiniSearch({
+    fields: ['title', 'url', 'description', 'tags'],
+    storeFields: ['id', 'title', 'url', 'description', 'tags']
   });
+  searchIndex.addAll(store.bookmarks);
 };
 
 export const updateSearchQueryDebounced = debounce((query) => {

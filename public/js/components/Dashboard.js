@@ -44,13 +44,13 @@ export default {
       }
 
       // lunr chokes on urls so we'll do our own search
-      if (searchQueryMinusTags.value?.trim()) {
-        results = results.concat(
-          store.bookmarks.filter((bm) =>
-            bm.url.includes(searchQueryMinusTags.value)
-          )
-        );
-      }
+      // if (searchQueryMinusTags.value?.trim()) {
+      //   results = results.concat(
+      //     store.bookmarks.filter((bm) =>
+      //       bm.url.includes(searchQueryMinusTags.value)
+      //     )
+      //   );
+      // }
 
       // dedupe the results
       const uniqueResultIds = [...new Set(results.map((bm) => bm.id))];
