@@ -70,8 +70,8 @@ export default {
   },
 
   template: /* HTML */ `
-    <form @submit.prevent class="pagination pure-form mt-lg mb-lg">
-      <button @click="pagePrevious" class="pure-button mr-md" type="button">
+    <form @submit.prevent class="pagination mt-lg mb-lg">
+      <button @click="pagePrevious" class="button mr-md" type="button">
         Previous
       </button>
 
@@ -79,7 +79,7 @@ export default {
         <input
           :max="total"
           @keydown.enter="emitInput"
-          class="pure-input pagination-input"
+          class="pagination-input"
           min="1"
           type="number"
           v-model.number="value"
@@ -87,9 +87,7 @@ export default {
         of {{ total }}
       </span>
 
-      <button @click="pageNext" class="pure-button ml-md" type="button">
-        Next
-      </button>
+      <button @click="pageNext" class="button ml-md" type="button">Next</button>
     </form>
   `
 };

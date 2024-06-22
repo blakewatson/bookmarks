@@ -139,10 +139,8 @@ export default {
   template: /* HTML */ `
     <div>
       <details :open="showAddForm" @toggle="onToggleOfAddForm">
-        <summary class="pure-button mb-sm">
+        <summary :class="{ dark: showAddForm }" class="button mb-sm">
           Add Bookmark
-          <span class="button-arrow" v-if="showAddForm">⏷</span>
-          <span class="button-arrow" v-else>⏵</span>
         </summary>
 
         <b-bookmark-form
@@ -150,11 +148,12 @@ export default {
           :selected-tags="selectedTags"
           @bookmark-saved="closeBookmarkForm"
           @cancel="closeBookmarkForm"
+          class="card"
           v-if="showAddForm"
         ></b-bookmark-form>
       </details>
 
-      <h1 class="title strong mt-lg mb-md">
+      <h1 class="title normal mt-lg mb-md">
         <span v-if="!selectedTags.length">All bookmarks</span>
         <span v-else>
           Tag(s):
@@ -167,8 +166,8 @@ export default {
       <!-- search control -->
       <b-search :search-query="searchQuery" class="mb-lg"></b-search>
 
-      <div class="pure-g">
-        <div class="pure-u pure-u-3-4">
+      <div class="row">
+        <div class="col-9">
           <!-- default dashboard view -->
           <b-bookmarks
             :bookmarks="bookmarks"
@@ -176,7 +175,7 @@ export default {
           ></b-bookmarks>
         </div>
 
-        <div class="pure-u pure-u-1-4 pl-md">
+        <div class="col-3 pl-md">
           <b-tags></b-tags>
         </div>
       </div>

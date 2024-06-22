@@ -50,29 +50,37 @@ export default {
   },
 
   template: /* HTML */ `
-    <ul class="pure-menu-list">
-      <li class="pure-menu-item">
-        <a @click.prevent="onClickOfShowAll" href="#" class="pure-menu-link">
-          <span v-if="limit"><strong>Top Tags</strong></span>
-          <span v-else><strong>All Tags</strong></span>
-        </a>
+    <ul class="menu-list">
+      <li class="menu-item">
+        <button
+          @click.prevent="onClickOfShowAll"
+          class="menu-item-button button clear"
+        >
+          <span v-if="limit"
+            ><strong>Top Tags ({{ tags.length }})</strong></span
+          >
+          <span v-else><strong>All Tags ({{ tags.length }})</strong></span>
+        </button>
       </li>
 
       <li :key="tag.name" class="pure-menu-item" v-for="tag in tags">
-        <a
-          :class="{ 'pure-menu-disabled': isTagSelected(tag.name) }"
+        <button
+          :class="{ 'menu-item-active': isTagSelected(tag.name) }"
           @click.prevent="onClickOfTag(tag.name)"
-          class="pure-menu-link"
-          href="#"
-          >{{ tag.name }} ({{ tag.count }})</a
+          class="menu-item-button button clear"
         >
+          {{ tag.name }} ({{ tag.count }})
+        </button>
       </li>
 
-      <li class="pure-menu-item">
-        <a @click.prevent="onClickOfShowAll" href="#" class="pure-menu-link">
+      <li class="menu-item">
+        <button
+          @click.prevent="onClickOfShowAll"
+          class="menu-item-button button clear"
+        >
           <span v-if="limit">Show All</span>
           <span v-else>Show Top</span>
-        </a>
+        </button>
       </li>
     </ul>
   `

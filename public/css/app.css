@@ -1,6 +1,16 @@
 @import url('spacing.css');
 
-:root {
+/* apply a natural box layout model to all elements, but allowing components to change */
+html {
+  box-sizing: border-box;
+}
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+/* :root {
   --bg: white;
   --font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir,
     segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial,
@@ -20,12 +30,20 @@
     --red: lightcoral;
     --text-color: lightgray;
   }
+} */
+
+:root {
+  --color-primary: #3e39d2;
+  --color-lightHoverBg: #fff;
 }
 
 body {
-  font-family: var(--font-family);
-  background-color: var(--bg);
-  color: var(--text-color);
+  font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui,
+    helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial,
+    sans-serif;
+  background-color: var(--bg-secondary-color);
+  /* background-color: var(--bg);
+  color: var(--text-color); */
 }
 
 .container {
@@ -34,11 +52,7 @@ body {
   max-width: 960px;
 }
 
-.pure-g > * {
-  box-sizing: border-box;
-}
-
-/* General typography
+/* ANCHOR General typography
 --------------------------------------- */
 
 /*
@@ -58,7 +72,7 @@ textarea,
 
 a {
   text-decoration: none;
-  color: var(--link-color);
+  /* color: var(--link-color); */
 }
 
 a:hover {
@@ -68,14 +82,19 @@ a:hover {
 .title {
   font-size: 1.2em;
   font-weight: normal;
+  line-height: 1.2em;
 }
 
 .strong {
   font-weight: bold;
 }
 
+.normal {
+  font-weight: normal;
+}
+
 .muted {
-  color: var(--text-muted);
+  color: var(--color-grey);
 }
 
 .error,
@@ -84,7 +103,7 @@ a:hover {
   color: var(--red);
 }
 
-/* Search control
+/* ANCHOR Search control
 --------------------------------------- */
 
 .search-form {
@@ -93,9 +112,13 @@ a:hover {
 
 .search-input {
   width: 100%;
+  box-shadow: 0 1px 4px #00000011;
+}
+input.search-input:focus {
+  box-shadow: 0 1px 8px #00000022;
 }
 
-/* Bookmarks list
+/* ANCHOR Bookmarks list
 --------------------------------------- */
 
 .selected-tag:not(:last-child)::after {
@@ -107,7 +130,7 @@ a:hover {
 }
 
 .url {
-  display: block;
+  display: inline-block;
   max-width: 100%;
   overflow: hidden;
   white-space: nowrap;
@@ -129,30 +152,35 @@ a:hover {
 
 .bookmark-meta,
 .url {
-  font-size: 0.875rem;
+  font-size: 1.4rem;
+}
+
+.bookmark-meta {
+  display: flex;
 }
 
 .bookmark-actions a {
-  color: var(--text-muted);
+  color: var(--color-grey);
 }
 
 .bookmark-actions .bookmark-delete:hover {
-  color: var(--red);
+  color: var(--color-error);
 }
 
-/* Pagination
+/* ANCHOR Pagination
 --------------------------------------- */
 .pagination {
   display: flex;
   justify-content: center;
 }
 
-.pagination-input {
+input.pagination-input {
+  display: inline-block;
   width: 5em;
   text-align: center;
 }
 
-/* Tag Autocomplete
+/* ANCHOR Tag Autocomplete
 --------------------------------------- */
 
 .fieldset-wrap {
@@ -160,15 +188,18 @@ a:hover {
 }
 
 .tag-autocomplete {
+  --color-lightHoverBg: #e8ecf1;
   position: absolute;
   left: 0;
-  top: calc(100% - 0.75rem);
+  top: 100%;
   margin: 0;
-  border: 1px solid var(--text-muted);
+  padding-left: 0;
+  border: 1px solid var(--color-grey);
   border-top: none;
   box-sizing: border-box;
   min-width: 250px;
-  background-color: var(--bg);
+  list-style: none;
+  background-color: var(--bg-color);
   z-index: 10;
 }
 
@@ -176,7 +207,7 @@ a:hover {
   top: 100%;
 }
 
-/* Forms 
+/* ANCHOR Forms 
 --------------------------------------- */
 
 .control {
@@ -187,6 +218,12 @@ a:hover {
 .button-arrow {
   font-size: 1.2em;
   line-height: 1em;
+}
+
+label,
+input,
+textarea {
+  box-sizing: border-box;
 }
 
 input[type='date'].error,
@@ -210,7 +247,7 @@ input[type='url'].danger:focus {
 }
 
 @media (prefers-color-scheme: dark) {
-  #app .pure-form input[type='text'],
+  /* #app .pure-form input[type='text'],
   #app .pure-form input[type='url'],
   #app .pure-form input[type='number'],
   #app .pure-form textarea {
@@ -244,31 +281,63 @@ input[type='url'].danger:focus {
   #app .pure-form input[type='url'].danger,
   #app .pure-form input[type='url'].danger:focus {
     border-color: var(--red);
+  } */
+}
+
+/* ANCHOR Menu
+--------------------------------------- */
+
+.menu-list {
+  padding-left: 0;
+  list-style: none;
+}
+
+.menu-item-button {
+  display: block;
+  padding: 0.4em 0.8em;
+  width: 100%;
+  text-align: left;
+
+  &.clear {
+    color: var(--color-darkGrey);
+  }
+
+  &:hover {
+    background: var(--color-lightHoverBg);
+    text-decoration: underline;
+    opacity: 1;
   }
 }
 
-/* Menu
---------------------------------------- */
-
-.pure-menu-selected > .pure-menu-link,
-.pure-menu-selected > .pure-menu-link {
+.menu-item-selected > .menu-item-button,
+.menu-item-selected > .menu-item-button {
   text-decoration: underline;
   color: var(--text-color) !important;
 }
 
+.menu-item-active {
+  font-weight: bold;
+}
+
 @media (prefers-color-scheme: dark) {
-  .pure-menu-link {
-    color: var(--text-muted);
+  .menu-item-button {
+    color: var(--color-grey);
   }
 
-  .pure-menu-active > .pure-menu-link,
-  .pure-menu-link:focus,
-  .pure-menu-link:hover {
+  .menu-link:focus,
+  .menu-link:hover {
     background: #1a1a1a;
   }
 }
 
-/* Loader
+/* ANCHOR Card
+--------------------------------------- */
+
+.card {
+  box-shadow: 0 1px 6px #00000022;
+}
+
+/* ANCHOR Loader
 --------------------------------------- */
 
 .loader-main {
@@ -281,7 +350,7 @@ input[type='url'].danger:focus {
 .loader {
   width: 48px;
   height: 48px;
-  border: 3px solid var(--text-muted);
+  border: 3px solid var(--color-grey);
   border-radius: 50%;
   display: inline-block;
   position: relative;
@@ -300,7 +369,7 @@ input[type='url'].danger:focus {
   height: 40px;
   border-radius: 50%;
   border: 3px solid transparent;
-  border-bottom-color: var(--text-muted);
+  border-bottom-color: var(--color-grey);
 }
 
 @keyframes rotation {

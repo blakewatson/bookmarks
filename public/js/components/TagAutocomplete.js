@@ -134,20 +134,20 @@ export default {
 
   template: /* HTML */ `
     <ul
-      class="pure-menu-list tag-autocomplete"
+      class="tag-autocomplete"
       v-if="showTagSuggestions && tagSuggestions.length"
     >
       <li
-        :class="{ 'pure-menu-selected': selectedTag === i }"
-        class="pure-menu-item"
+        :class="{ 'menu-item-selected': selectedTag === i }"
+        class="menu-item"
         v-for="(tag, i) in tagSuggestions"
       >
-        <a
+        <button
           @click.prevent.stop="onClickOfSuggestion(tag)"
-          href="#"
-          class="pure-menu-link"
-          >{{ tag.name }} ({{tag.count}})</a
+          class="menu-item-button button clear"
         >
+          {{ tag.name }} ({{tag.count}})
+        </button>
       </li>
     </ul>
   `

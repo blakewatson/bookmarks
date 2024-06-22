@@ -133,12 +133,12 @@ export default {
             </li>
           </ul>
 
-          <div class="bookmark-meta pure-g mt-md">
-            <div class="pure-u pr-md">
+          <div class="bookmark-meta mt-md">
+            <div class="pr-md">
               <time>{{ createdDate }}</time>
             </div>
 
-            <div class="pure-u bookmark-actions">
+            <div class="bookmark-actions">
               <a :href="archiveUrl" class="mr-sm" v-if="archiveUrl">cached</a>
 
               <a @click.prevent="onClickOfEdit" class="mr-sm" href="#">edit</a>

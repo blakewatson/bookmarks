@@ -209,35 +209,38 @@ export default {
   template: /* HTML */ `
     <form @submit.prevent="onFormSubmit" class="pure-form pure-form-stacked">
       <div class="fieldset-wrap">
-        <fieldset class="pure-group bookmark-form-fieldset">
-          <input
-            class="pure-input-1"
-            type="text"
-            placeholder="Title"
-            v-model="title"
-          />
-          <input
-            :class="{ error: isDupe }"
-            class="pure-input-1"
-            type="url"
-            placeholder="URL"
-            v-model="url"
-          />
-          <textarea
-            class="pure-input-1"
-            placeholder="Description"
-            rows="3"
-            v-model="description"
-          ></textarea>
-          <input
-            @keydown="onTagKeyDown"
-            class="pure-input-1"
-            ref="tagInput"
-            type="text"
-            placeholder="Tags"
-            v-model="tags"
-          />
-        </fieldset>
+        <p>
+          <label>
+            Title
+            <input type="text" v-model="title" />
+          </label>
+        </p>
+
+        <p>
+          <label>
+            URL
+            <input :class="{ error: isDupe }" type="url" v-model="url" />
+          </label>
+        </p>
+
+        <p>
+          <label>
+            Description
+            <textarea rows="3" v-model="description"></textarea>
+          </label>
+        </p>
+
+        <p>
+          <label>
+            Tags
+            <input
+              @keydown="onTagKeyDown"
+              ref="tagInput"
+              type="text"
+              v-model="tags"
+            />
+          </label>
+        </p>
 
         <b-tag-autocomplete
           :text="tags"
@@ -248,20 +251,16 @@ export default {
       <!-- dupe error message -->
       <p class="error" v-if="isDupe && !bookmark">
         This URL is already bookmarked.
-        <button @click="onClickOfViewDupe" class="pure-button" type="button">
+        <button @click="onClickOfViewDupe" class="button" type="button">
           View it
         </button>
       </p>
 
-      <div class="mt-sm">
-        <button class="pure-button pure-button-primary" type="submit">
-          Save Bookmark
-        </button>
+      <footer class="mt-lg is-right">
+        <button @click="emitCancel" class="button" type="button">Cancel</button>
 
-        <button @click="emitCancel" class="pure-button ml-sm" type="button">
-          Cancel
-        </button>
-      </div>
+        <button class="ml-sm" type="submit">Save Bookmark</button>
+      </footer>
     </form>
   `
 };

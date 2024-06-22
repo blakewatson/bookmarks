@@ -139,7 +139,7 @@ export default {
       <input
         @keydown="onSearchKeyDown"
         autofocus
-        class="pure-input-1 search-input mr-sm"
+        class="search-input mr-sm"
         placeholder="Type and hit enter to search"
         type="text"
         v-model="search"

@@ -73,12 +73,9 @@ export default {
 
   template: /* HTML */ `
     <div class="bookmarks-list">
-      <b-bookmark
-        :bookmark="bm"
-        :key="bm.id"
-        class="pt-md pb-md"
-        v-for="bm in paginatedBookmarks"
-      ></b-bookmark>
+      <div class="card mb-md py-md" v-for="bm in paginatedBookmarks">
+        <b-bookmark :bookmark="bm" :key="bm.id"></b-bookmark>
+      </div>
 
       <p v-if="!paginatedBookmarks.length">No results.</p>
 
