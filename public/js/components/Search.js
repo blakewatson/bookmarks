@@ -60,14 +60,9 @@ export default {
     const onSearchKeyDown = (event) => {
       const terms = search.value.split(' ');
 
-      // if enter key, abort
-      if (event.key === 'Enter') {
-        return true;
-      }
-
       // if the latest search term isn't a hashtag, abort
       if (!terms.at(-1).startsWith('#')) {
-        return;
+        return true;
       }
 
       onTagKeyDown(event);
@@ -84,7 +79,7 @@ export default {
     const onTagAutocomplete = (tag) => {
       const terms = search.value.split(' ');
       terms[terms.length - 1] = `#${tag}`;
-      search.value = terms.join(' ') + '';
+      search.value = terms.join(' ') + ' ';
     };
 
     const processTags = () => {

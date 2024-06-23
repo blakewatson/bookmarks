@@ -10,28 +10,6 @@ html {
   box-sizing: inherit;
 }
 
-/* :root {
-  --bg: white;
-  --font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir,
-    segoe ui, helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial,
-    sans-serif;
-  --border-color: gainsboro;
-  --link-color: blue;
-  --red: crimson;
-  --text-color: black;
-  --text-muted: gray;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #222;
-    --border-color: dimgray;
-    --link-color: powderblue;
-    --red: lightcoral;
-    --text-color: lightgray;
-  }
-} */
-
 :root {
   --color-primary: #3e39d2;
   --color-lightHoverBg: #fff;
