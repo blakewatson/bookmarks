@@ -37,6 +37,16 @@ html {
   --color-lightHoverBg: #fff;
 }
 
+@media (prefers-color-scheme: dark) {
+  html {
+    filter: invert(90%) hue-rotate(180deg);
+  }
+
+  a:hover {
+    opacity: 1 !important;
+  }
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, avenir next, avenir, segoe ui,
     helvetica neue, helvetica, Cantarell, Ubuntu, roboto, noto, arial,
@@ -54,21 +64,6 @@ body {
 
 /* ANCHOR General typography
 --------------------------------------- */
-
-/*
-When setting the primary font stack, apply it to the Pure grid units along
-with "html", "button", "input", "select", and "textarea". Pure Grids use
-specific font stacks to ensure the greatest OS/browser compatibility.
-*/
-html,
-button,
-input,
-select,
-textarea,
-.pure-g [class*='pure-u'] {
-  /* Set your content font stack here: */
-  font-family: var(--font-family);
-}
 
 a {
   text-decoration: none;
@@ -116,6 +111,15 @@ a:hover {
 }
 input.search-input:focus {
   box-shadow: 0 1px 8px #00000022;
+}
+
+@media (prefers-color-scheme: dark) {
+  .search-input {
+    box-shadow: 0 1px 4px #ffffff11;
+  }
+  input.search-input:focus {
+    box-shadow: 0 1px 8px #ffffff22;
+  }
 }
 
 /* ANCHOR Bookmarks list
@@ -247,41 +251,12 @@ input[type='url'].danger:focus {
 }
 
 @media (prefers-color-scheme: dark) {
-  /* #app .pure-form input[type='text'],
-  #app .pure-form input[type='url'],
-  #app .pure-form input[type='number'],
-  #app .pure-form textarea {
-    background-color: #333;
-    border-color: darkgray;
-    box-shadow: 0 1px 3px black;
-    color: var(--text-color);
+  .button.primary,
+  button[type='submit'] {
+    /* filter: invert(100%) hue-rotate(180deg); */
+    /* background: var(--color-primary);
+    color: #222222; */
   }
-
-  #app .pure-form input[type='text']:focus,
-  #app .pure-form input[type='url']:focus,
-  #app .pure-form input[type='number']:focus,
-  #app .pure-form textarea:focus {
-    border-color: #129fea;
-  }
-
-  #app .pure-form input[type='date'].error,
-  #app .pure-form input[type='date'].error:focus,
-  #app .pure-form input[type='date'].danger,
-  #app .pure-form input[type='date'].danger:focus,
-  #app .pure-form input[type='number'].error,
-  #app .pure-form input[type='number'].error:focus,
-  #app .pure-form input[type='number'].danger,
-  #app .pure-form input[type='number'].danger:focus,
-  #app .pure-form input[type='text'].error,
-  #app .pure-form input[type='text'].error:focus,
-  #app .pure-form input[type='text'].danger,
-  #app .pure-form input[type='text'].danger:focus,
-  #app .pure-form input[type='url'].error,
-  #app .pure-form input[type='url'].error:focus,
-  #app .pure-form input[type='url'].danger,
-  #app .pure-form input[type='url'].danger:focus {
-    border-color: var(--red);
-  } */
 }
 
 /* ANCHOR Menu
@@ -335,6 +310,13 @@ input[type='url'].danger:focus {
 
 .card {
   box-shadow: 0 1px 6px #00000022;
+}
+
+@media (prefers-color-scheme: dark) {
+  .card {
+    border: 1px solid #ddd;
+    box-shadow: 0 1px 6px #ffffff55;
+  }
 }
 
 /* ANCHOR Loader
