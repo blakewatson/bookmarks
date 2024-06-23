@@ -73,7 +73,7 @@ a:hover {
 .error,
 .danger,
 .red {
-  color: var(--red);
+  color: var(--color-error);
 }
 
 /* ANCHOR Search control
@@ -224,7 +224,7 @@ input[type='url'].error,
 input[type='url'].error:focus,
 input[type='url'].danger,
 input[type='url'].danger:focus {
-  border-color: var(--red);
+  border-color: var(--color-error);
   color: unset;
 }
 

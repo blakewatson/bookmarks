@@ -223,6 +223,14 @@ export default {
           </label>
         </p>
 
+        <!-- dupe error message -->
+        <p class="error" v-if="isDupe && !bookmark">
+          This URL is already bookmarked.
+          <button @click="onClickOfViewDupe" class="button" type="button">
+            View it
+          </button>
+        </p>
+
         <p>
           <label>
             Description
@@ -247,14 +255,6 @@ export default {
           @autocomplete="onTagAutocomplete"
         ></b-tag-autocomplete>
       </div>
-
-      <!-- dupe error message -->
-      <p class="error" v-if="isDupe && !bookmark">
-        This URL is already bookmarked.
-        <button @click="onClickOfViewDupe" class="button" type="button">
-          View it
-        </button>
-      </p>
 
       <footer class="mt-lg is-right">
         <button @click="emitCancel" class="button" type="button">Cancel</button>

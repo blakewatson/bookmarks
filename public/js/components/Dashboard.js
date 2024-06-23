@@ -17,6 +17,8 @@ export default {
     const urlFormData = ref(null);
     /** @type Vue.Ref<string> */
     const view = ref(ViewType.home);
+    /** @type Vue.Ref<string | boolean> */
+    const sortBy = ref('created');
 
     /* -- COMPUTED -- */
 
@@ -42,15 +44,6 @@ export default {
       if (searchQueryMinusTags.value?.trim()) {
         results = search(results);
       }
-
-      // lunr chokes on urls so we'll do our own search
-      // if (searchQueryMinusTags.value?.trim()) {
-      //   results = results.concat(
-      //     store.bookmarks.filter((bm) =>
-      //       bm.url.includes(searchQueryMinusTags.value)
-      //     )
-      //   );
-      // }
 
       // dedupe the results
       const uniqueResultIds = [...new Set(results.map((bm) => bm.id))];
@@ -78,6 +71,15 @@ export default {
     watch(bookmarks, (/** @type {Types.Bookmark[]} */ bookmarks) => {
       state.currentBookmarks = bookmarks;
       state.currentBookmarkIds = new Set(bookmarks.map((bm) => bm.id));
+    });
+
+    watch(searchQueryMinusTags, (/** @type string */ query) => {
+      if (query?.trim().length) {
+        // if we are doing an actual search, let minisearch sort the results itself
+        sortBy.value = false;
+        return;
+      }
+      sortBy.value = 'created';
     });
 
     /* -- METHODS -- */
@@ -130,6 +132,7 @@ export default {
       searchQueryMinusTags,
       selectedTags,
       showAddForm,
+      sortBy,
       urlFormData,
       view,
       ViewType
@@ -171,6 +174,7 @@ export default {
           <!-- default dashboard view -->
           <b-bookmarks
             :bookmarks="bookmarks"
+            :sort-by="sortBy"
             v-if="view === ViewType.home"
           ></b-bookmarks>
         </div>
