@@ -123,11 +123,12 @@ export default {
           </p>
 
           <div
-            class="description mb-sm"
+            class="description mb-md"
             v-html="bookmark.description.replaceAll('\\n', '<br>')"
+            v-if="bookmark.description"
           ></div>
 
-          <ul class="tags m-none mt-md mb-sm">
+          <ul class="tags m-none my-sm" v-if="bookmark.tags.length">
             <li class="mr-sm mt-none mb-none" v-for="tag in bookmark.tags">
               <a @click.prevent="onClickOfTag(tag)" href="#">{{ tag }}</a>
             </li>

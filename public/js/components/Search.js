@@ -128,21 +128,30 @@ export default {
   template: /* HTML */ `
     <form
       @submit.prevent="onSubmit"
-      class="pure-form search-form"
+      class="search-form"
       style="position: relative"
     >
+      <label for="search-input" class="sr-only">Search</label>
       <input
         @keydown="onSearchKeyDown"
         autofocus
         class="search-input mr-sm"
+        id="search-input"
         placeholder="Type and hit enter to search"
         type="text"
         v-model="search"
       />
 
-      <button @click="clearSearch" class="pure-button" type="button">
+      <button
+        @click="clearSearch"
+        class="button secondary outline px-sm"
+        type="button"
+        v-if="search"
+      >
         Clear
       </button>
+
+      <button class="button" type="submit">Search</button>
 
       <b-tag-autocomplete
         :text="computedTagsText"
