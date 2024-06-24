@@ -1,5 +1,5 @@
-import { computed, ref } from '../lib/vue.esm-browser.js';
-import { deselectTag, selectTag, state } from '../store.js';
+import { ref, watch } from '../lib/vue.esm-browser.js';
+import { deselectTag, selectTag, state, store } from '../store.js';
 import { getTagsSortedByCount } from '../utils.js';
 
 /** @type {Vue.ComponentOptions} */
@@ -12,10 +12,26 @@ export default {
     /** @type {Vue.Ref<boolean>} */
     const showAll = ref(false);
 
-    const tags = computed(() => {
-      const resultsOnly = Boolean(state.selectedTags.length);
-      return getTagsSortedByCount(resultsOnly).slice(0, limit.value);
-    });
+    /** @type {Vue.Ref<Types.TagWithCount[]>} */
+    const tags = ref([]);
+
+    watch(
+      () => state.selectedTags,
+      (/** @type {string[]} */ selectedTags) => {
+        const resultsOnly = Boolean(selectedTags.length);
+        tags.value = getTagsSortedByCount(resultsOnly).slice(0, limit.value);
+      },
+      { immediate: true }
+    );
+
+    watch(
+      () => store.bookmarks,
+      (/** @type {Types.Bookmark[]} */ bookmarks) => {
+        const resultsOnly = Boolean(state.selectedTags.length);
+        tags.value = getTagsSortedByCount(resultsOnly).slice(0, limit.value);
+      },
+      { deep: true }
+    );
 
     /** @param {string} tag */
     const isTagSelected = (tag) => state.selectedTags.includes(tag);

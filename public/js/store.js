@@ -1,4 +1,5 @@
 import { reactive } from './lib/vue.esm-browser.js';
+import { createSearchIndex } from './search.js';
 import {
   assignRandomId,
   fetcher,
@@ -78,6 +79,8 @@ export const saveBookmark = (bookmark) => {
       store.bookmarks[bookmarkIndex] = updatedBookmark;
       handleBookmarkTags(updatedBookmark);
       writeLocal();
+      createSearchIndex();
+      initTagCounts();
       return write();
     }
 
@@ -99,6 +102,9 @@ export const saveBookmark = (bookmark) => {
   store.bookmarks.push(newBookmark);
 
   handleBookmarkTags(newBookmark);
+
+  createSearchIndex();
+  initTagCounts();
 
   const writePromise = write();
 
