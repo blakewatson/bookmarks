@@ -14,7 +14,7 @@ Bookmarks is a [small web](https://benhoyt.com/writings/the-small-web-is-beautif
 
 - Saves bookmarks — title, URL, description, and tags.
 - You can filter your bookmarks by one or more tags.
-- Has archival capabilities. Every bookmark is sent over to the Wayback Machine.
+- Has archival capabilities. Every bookmark is sent over to the [Wayback Machine](https://wayback-api.archive.org/).
 - Has basic search capability. Search within tags.
 - Comes with a bookmarklet for quickly adding bookmarks.
 - Also comes with an importer script that can convert a Pinboard export file into the format needed by Bookmarks.
@@ -48,7 +48,7 @@ Then run the init script. This script will prompt you to create a password. Then
 npm run init
 ```
 
-The environment file has the following variables.
+The environment file has the following variables. If you don’t care about archiving to Wayback Machine, and the default `public` and `data` locations are okay with you, you don’t need to do anything further. Otherwise, you can configure these options as needed.
 
 - `TOKEN_HASH` - **Required.** The `init` script will create this hash for you and put it in the `.env` file. If you don’t run `init`, you will need to generate this manually using the `bcryptjs` package on NPM. You can run the helper script `scripts/create-hash.js` to quickly do that. Make sure you keep the clear text version in your password manager or whatever. 
 - `PUBLIC_PATH` - **Required.** This is the path to the public folder from the perspective of the `app` folder. By default this would be `../public`.
@@ -74,7 +74,7 @@ These are the initial data files you need. `npm run init` will create them for y
 
 ### Serve the app
 
-Once you have your credentials in the `.env` file and your initial data files created, you are ready to install packages and serve the app:
+Once you have your credentials in the `.env` file and your initial data files created, you are ready to serve the app:
 
 ```bash
 npm run serve
