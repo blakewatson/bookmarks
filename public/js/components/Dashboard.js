@@ -167,7 +167,11 @@ export default {
       </h1>
 
       <!-- search control -->
-      <b-search :search-query="searchQuery" class="mb-lg"></b-search>
+      <b-search
+        :search-query="searchQuery"
+        :show-clear="searchQuery || selectedTags.length"
+        class="mb-lg"
+      ></b-search>
 
       <div class="row">
         <div class="col-9">

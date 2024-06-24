@@ -240,7 +240,7 @@ export default {
 
         <p>
           <label>
-            Tags
+            Tags <span class="muted">(space-separated)</span>
             <input
               @keydown="onTagKeyDown"
               ref="tagInput"

@@ -5,12 +5,14 @@ import { useTagAutocomplete } from '../utils.js';
 /**
  * @typedef {Object} Props
  * @property {string} searchQuery
+ * @property {boolean} showClear
  */
 
 /** @type {Vue.ComponentOptions} */
 export default {
   props: {
-    searchQuery: String
+    searchQuery: String,
+    showClear: Boolean
   },
 
   /**
@@ -146,7 +148,7 @@ export default {
         @click="clearSearch"
         class="button secondary outline px-sm"
         type="button"
-        v-if="search"
+        v-if="showClear || search"
       >
         Clear
       </button>

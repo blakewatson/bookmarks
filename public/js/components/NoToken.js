@@ -39,8 +39,12 @@ export default {
 
   template: /* HTML */ `
     <form class="pure-form pure-form-stacked" @submit.prevent="addToken">
-      <label>Token</label>
-      <input class="pure-input-2-3" type="text" v-model="token" />
+      <p>
+        <label>
+          Token
+          <input class="pure-input-2-3" type="text" v-model="token" />
+        </label>
+      </p>
       <button class="pure-button pure-button-primary" type="submit">Go</button>
       <p class="error" v-if="message">{{ message }}</p>
     </form>
