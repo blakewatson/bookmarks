@@ -1,9 +1,13 @@
 # Bookmarks
 
-Bookmarks is a small web app designed to replace Pinboard as a bookmarking tool for an individual.
+Bookmarks is a [small web](https://benhoyt.com/writings/the-small-web-is-beautiful/) app designed to replace Pinboard as a bookmarking tool for an individual.
 
 <p align="center">
-<img alt="Screenshot of the application. A clean minimalist list of bookmarks." src="https://i.postimg.cc/nLCJ2x97/Screen-Shot-2022-06-20-at-11-45-45-PM.png" />
+<img alt="Screenshot of the application. A clean minimalist list of bookmarks. Light mode." src="https://i.postimg.cc/NjHytbXq/bookmarks-light.png" />
+</p>
+
+<p align="center">
+<img alt="Screenshot of the application. A clean minimalist list of bookmarks. Light mode." src="https://i.postimg.cc/YqV4TThz/bookmarks-dark.png" />
 </p>
 
 ## Features
@@ -28,16 +32,32 @@ There are some pretty big differences between this tool and Pinboard. The main o
 
 This is a NodeJS app that mostly shuttles JSON back and forth between the frontend application and the file system. Here is a rough explanation of how to set up the app.
 
-You’re going to need a `.env` file with the following bits of data.
+### Install
 
-- `TOKEN_HASH` - you will need to generate this manually using the `bcryptjs` package on NPM. Make sure you keep the clear text version in your password manager or whatever.
-- `S3_ACCESS_KEY` and `S3_SECRET_KEY` - these are the keys needed to access the Wayback Machine API. You can get those here: [https://archive.org/account/s3.php](https://archive.org/account/s3.php)
-- `PUBLIC_PATH` - this is the path to the public folder from the perspective of the `app` folder. By default this would be `../public`.
-- `DATA_PATH` - this is the path to a data folder that will contain the two JSON files that hold all of your data (more about that later). This is also from the perspective of the `app` folder.
-- `BACKGROUND_ARCHIVER` - set this to `true` if you would like the app to slowly archive all of your bookmarks on the Wayback Machine.
-- `BACKGROUND_ARCHIVE_INTERVAL` - this should be the number of milliseconds between each archival attempt. Personally, I set this to `3600000` which is an hour.
+First clone the repo and install npm dependencies.
 
-I’m lazy so I didn’t bother automating the initial generation of the data files. You will need to create these manually.
+```bash
+npm i
+```
+
+### Initialize
+
+Then run the init script. This script will prompt you to create a password. Then it will create a starting `.env` file and the two data files you’ll need, `data/bookmarks.json` and `data/achives.json`.
+
+```bash
+npm run init
+```
+
+The environment file has the following variables.
+
+- `TOKEN_HASH` - **Required.** The `init` script will create this hash for you and put it in the `.env` file. If you don’t run `init`, you will need to generate this manually using the `bcryptjs` package on NPM. You can run the helper script `scripts/create-hash.js` to quickly do that. Make sure you keep the clear text version in your password manager or whatever. 
+- `PUBLIC_PATH` - **Required.** This is the path to the public folder from the perspective of the `app` folder. By default this would be `../public`.
+- `DATA_PATH` - **Required.** This is the path to a data folder that will contain the two JSON files that hold all of your data (more about that later). This is also from the perspective of the `app` folder. By default this would be `../data`. If you change this to something else, you’ll need to manually move the data files created by the `init` script.
+- `S3_ACCESS_KEY` and `S3_SECRET_KEY` - These are the keys needed to access the Wayback Machine API. You can get those here: [https://archive.org/account/s3.php](https://archive.org/account/s3.php). If you don’t care about archiving your bookmarks to Wayback Machine you can ignore these.
+- `BACKGROUND_ARCHIVER` - Set this to `true` if you would like the app to slowly archive all of your existing uncached bookmarks on the Wayback Machine. Useful if you’ve imported bookmarks or previously had archiving disabled.
+- `BACKGROUND_ARCHIVE_INTERVAL` - This should be the number of milliseconds between each archival attempt. Personally, I set this to `3600000` which is an hour.
+
+These are the initial data files you need. `npm run init` will create them for you, or you can create them manually.
 
 - `bookmarks.json` should be created with the following initial content:
 
@@ -52,10 +72,11 @@ I’m lazy so I didn’t bother automating the initial generation of the data fi
 - `archives.json` should be created with the following initial content: `[]`
 - The `server` and `archiver` scripts need to have permission to write to your data folder.
 
+### Serve the app
+
 Once you have your credentials in the `.env` file and your initial data files created, you are ready to install packages and serve the app:
 
 ```bash
-npm install
 npm run serve
 ```
 
