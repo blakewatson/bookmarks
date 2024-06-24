@@ -36,9 +36,18 @@ const auth = (req, res, next) => {
 };
 
 app.use(express.json({ limit: '5mb' }));
+
+// set a cookie to let the frontend know that we're using Wayback Machine caching
+app.use((req, res, next) => {
+  if (process.env.S3_ACCESS_KEY && process.env.S3_SECRET_KEY) {
+    res.cookie('wayback-machine-enabled', 'true');
+  } else {
+    res.clearCookie('wayback-machine-enabled');
+  }
+  next();
+});
+
 app.use(express.static(publicPath));
-// for nfsn's let's encrypt challenges
-app.use(express.static(path.resolve(__dirname, '../../public')));
 app.use(auth);
 
 app.get('/api/bookmarks', (req, res) => {

@@ -85,6 +85,22 @@ export default {
       }
     };
 
+    function getCookie(name) {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop().split(';').shift();
+      return null;
+    }
+
+    // Check if the 'wayback-machine-enabled' cookie is set
+    const waybackMachineEnabled = ref(getCookie('wayback-machine-enabled'));
+
+    if (waybackMachineEnabled.value) {
+      console.log('Wayback Machine caching is enabled.');
+    } else {
+      console.log('Wayback Machine caching is not enabled.');
+    }
+
     return {
       areYouSure,
       archiveUrl,
@@ -97,7 +113,8 @@ export default {
       onClickOfEdit,
       onClickOfRecache,
       onClickOfTag,
-      updatedDate
+      updatedDate,
+      waybackMachineEnabled
     };
   },
 
@@ -144,8 +161,13 @@ export default {
 
               <a @click.prevent="onClickOfEdit" class="mr-sm" href="#">edit</a>
 
-              <a @click.prevent="onClickOfRecache" class="mr-sm" href="#"
-                >{{ isArchiving ? 'archiving...' : 're-cache' }}</a
+              <a
+                @click.prevent="onClickOfRecache"
+                class="mr-sm"
+                href="#"
+                v-if="waybackMachineEnabled"
+              >
+                {{ isArchiving ? 'archiving...' : 're-cache' }}</a
               >
 
               <a
