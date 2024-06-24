@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "backup": "node app/backup.js",
-    "initialize": "node initData.js",
+    "backup": "node scripts/backup.js",
+    "init": "node scripts/initialize.js",
     "dev": "NODE_ENV=development nodemon app/server.js",
     "serve": "npm run dev",
     "prod": "NODE_ENV=production node app/server.js"
