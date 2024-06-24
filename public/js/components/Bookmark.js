@@ -1,6 +1,6 @@
 import { computed, ref } from '../lib/vue.esm-browser.js';
 import { archiveBookmark, deleteBookmark, selectTag } from '../store.js';
-import { dateDisplay, getArchiveUrl } from '../utils.js';
+import { dateDisplay, getArchiveUrl, getCookie } from '../utils.js';
 
 /**
  * @typedef {Object} Props
@@ -84,13 +84,6 @@ export default {
         console.error(error);
       }
     };
-
-    function getCookie(name) {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop().split(';').shift();
-      return null;
-    }
 
     // Check if the 'wayback-machine-enabled' cookie is set
     const waybackMachineEnabled = ref(getCookie('wayback-machine-enabled'));

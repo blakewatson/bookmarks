@@ -3,6 +3,7 @@ import { createSearchIndex } from './search.js';
 import {
   assignRandomId,
   fetcher,
+  getCookie,
   getTagCount,
   tagCountCacheClear
 } from './utils.js';
@@ -110,9 +111,11 @@ export const saveBookmark = (bookmark) => {
 
   writePromise
     .then((data) => {
-      setTimeout(() => {
-        archiveBookmark(newBookmark);
-      }, 2000);
+      if (getCookie('wayback-machine-enabled')) {
+        setTimeout(() => {
+          archiveBookmark(newBookmark);
+        }, 2000);
+      }
     })
     .catch((err) => {
       console.log('error in write catch');
