@@ -212,7 +212,11 @@ export const removeBookmarkFromAllTags = (bookmarkId) => {
 
 export const setTagsArray = () => {
   store.tags = store.bookmarksToTags.reduce((tags, bt) => {
-    const tag = bt[1];
+    const tag = bt[1].toLowerCase();
+
+    if (tag === 'WebDesign') {
+      console.log('found WebDesign');
+    }
 
     if (tags.includes(tag)) {
       return tags;
@@ -220,12 +224,16 @@ export const setTagsArray = () => {
 
     return [...tags, tag];
   }, []);
+
+  writeLocal();
 };
 
 export const deleteTag = (tagName) => {
-  store.tags = store.tags.filter((t) => t !== tagName);
+  store.tags = store.tags.filter(
+    (t) => t.toLowerCase() !== tagName.toLowerCase()
+  );
   store.bookmarksToTags = store.bookmarksToTags.filter(
-    (bt) => bt[1] !== tagName
+    (bt) => bt[1].toLowerCase() !== tagName.toLowerCase()
   );
 };
 

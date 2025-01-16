@@ -15,11 +15,15 @@ export default {
     /** @type {Vue.Ref<Types.TagWithCount[]>} */
     const tags = ref([]);
 
+    const setTagsList = () => {
+      const resultsOnly = Boolean(state.selectedTags.length);
+      tags.value = getTagsSortedByCount(resultsOnly).slice(0, limit.value);
+    };
+
     watch(
       () => state.selectedTags,
       (/** @type {string[]} */ selectedTags) => {
-        const resultsOnly = Boolean(selectedTags.length);
-        tags.value = getTagsSortedByCount(resultsOnly).slice(0, limit.value);
+        setTagsList();
       },
       { immediate: true }
     );
@@ -27,8 +31,7 @@ export default {
     watch(
       () => store.bookmarks,
       (/** @type {Types.Bookmark[]} */ bookmarks) => {
-        const resultsOnly = Boolean(state.selectedTags.length);
-        tags.value = getTagsSortedByCount(resultsOnly).slice(0, limit.value);
+        setTagsList();
       },
       { deep: true }
     );
@@ -39,10 +42,12 @@ export default {
     const onClickOfShowAll = () => {
       if (limit.value) {
         limit.value = undefined; // end of sequence
+        setTagsList();
         return;
       }
 
       limit.value = TOP_TAGS_COUNT;
+      setTagsList();
     };
 
     /** @param {string} tag */

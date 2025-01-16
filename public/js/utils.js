@@ -99,7 +99,7 @@ export const getTagCount = (tag, resultsOnly = false) => {
   let count = 0;
 
   for (const bt of store.bookmarksToTags) {
-    if (bt[1] !== tag) {
+    if (bt[1].toLowerCase() !== tag.toLowerCase()) {
       continue;
     }
 
