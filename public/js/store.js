@@ -29,8 +29,10 @@ export const store = reactive({
 });
 
 export const selectTag = (tag) => {
-  if (store.tags.find((t) => t === tag)) {
-    state.selectedTags = Array.from(new Set([...state.selectedTags, tag]));
+  if (store.tags.find((t) => t.toLowerCase() === tag.toLowerCase())) {
+    state.selectedTags = Array.from(
+      new Set([...state.selectedTags, tag.toLowerCase()])
+    );
   }
 };
 
@@ -40,8 +42,10 @@ export const deselectTag = (tag) => {
 
 // initializes the base tag counts (ie, no selected tags)
 export const initTagCounts = () => {
-  state.tagCounts = store.tags.map((t) => {
-    return [t, getTagCount(t)];
+  state.tagCounts = Array.from(
+    new Set(store.tags.map((t) => t.toLowerCase()))
+  ).map((t) => {
+    return [t.toLowerCase(), getTagCount(t.toLowerCase())];
   });
   state.tagCounts.sort((a, b) => b[1] - a[1]);
 };
@@ -145,7 +149,9 @@ export const handleBookmarkTags = (bookmark) => {
     // remove all tags associated with this bookmark
     .filter((bt) => bt[0] !== bookmark.id)
     // add the correct tags back
-    .concat(tagsOnBookmark.map((tagName) => [bookmark.id, tagName]));
+    .concat(
+      tagsOnBookmark.map((tagName) => [bookmark.id, tagName.toLowerCase()])
+    );
 
   tagCountCacheClear();
 
@@ -214,11 +220,7 @@ export const setTagsArray = () => {
   store.tags = store.bookmarksToTags.reduce((tags, bt) => {
     const tag = bt[1].toLowerCase();
 
-    if (tag === 'WebDesign') {
-      console.log('found WebDesign');
-    }
-
-    if (tags.includes(tag)) {
+    if (tags.includes(tag.toLowerCase())) {
       return tags;
     }
 
@@ -266,12 +268,6 @@ export const write = () => {
     method: 'POST',
     body: JSON.stringify(data)
   });
-
-  // resp
-  //   .then((resp) => {
-  //     console.log(resp);
-  //   })
-  //   .catch((err) => console.error(err));
 
   return resp;
 };

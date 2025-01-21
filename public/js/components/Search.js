@@ -97,7 +97,7 @@ export default {
       tags.value = [];
 
       processedTags.forEach((t) => {
-        const tag = t.slice(1);
+        const tag = t.slice(1).toLowerCase();
         selectTag(tag);
         tags.value.push(tag);
       });

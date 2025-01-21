@@ -35,7 +35,9 @@ export default {
 
       if (selectedTags.value.length) {
         bookmarksWithTag = store.bookmarks.filter((bm) =>
-          selectedTags.value.every((tag) => bm.tags.includes(tag))
+          selectedTags.value.every((tag) =>
+            bm.tags.map((t) => t.toLowerCase()).includes(tag.toLowerCase())
+          )
         );
 
         results = [...bookmarksWithTag];

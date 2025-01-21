@@ -144,7 +144,11 @@ export const getTagsSortedByCount = (resultsOnly = false) => {
   // if we're only counting results, use only the tags found in the current bookmarks
   if (resultsOnly) {
     tagsToCount = Array.from(
-      new Set(state.currentBookmarks.map((bm) => bm.tags).flat())
+      new Set(
+        state.currentBookmarks
+          .map((bm) => bm.tags.map((t) => t.toLowerCase()))
+          .flat()
+      )
     );
   }
 
